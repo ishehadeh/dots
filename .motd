@@ -44,7 +44,7 @@ highlight_partition_percent() {
 }
 
 info() {
-    mounts=$(cat /proc/mounts | grep -P '/dev/sda([0-9]+) (/.+)* [a-zA-Z0-9]+ .*' | awk '{print $2}')
+    mounts=$(cat /etc/fstab | awk '$1 ~ /UUID=[0-9\-a-fA-F]+/ && $2 ~ /(\/.*)+/ {print $2 }')
     
 	info_message 'host' "   `whoami`@`hostname`"
     info_message 'updates' "`pacman -Qqu | wc -l`/`pacman -Qq | wc -l`"
