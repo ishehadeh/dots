@@ -1,0 +1,12 @@
+# Simple Prompt
+
+prompt_simple_help () {
+  echo "A prompt that displays '[user]@[host] [path]>', without any fancy formatting"
+}
+
+prompt_simple_setup () {
+  PS1='%n@%m %~/>'
+  prompt_opts=(cr subst percent)
+}
+
+prompt_simple_setup "$@"

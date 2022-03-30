@@ -16,6 +16,11 @@ compinit
 setopt autocd extendedglob nomatch notify
 unsetopt beep
 
+# Load Prompts
+fpath=(~/.config/zsh/prompts $fpath)
+autoload -U promptinit
+promptinit
+
 # ZLE
 # ----------------
 
