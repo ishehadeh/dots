@@ -1,0 +1,7 @@
+{
+    "workbench.startupEditor": "none",
+    "editor.fontFamily": "Iosevka Term, 'IBM Plex Mono', 'Droid Sans Mono', 'monospace', monospace",
+    "editor.fontSize": 16,
+    // "editor.smoothScrolling": true,
+    "editor.mouseWheelScrollSensitivity": 1.5,
+}
