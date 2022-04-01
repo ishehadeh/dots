@@ -228,6 +228,44 @@ root.buttons(gears.table.join(
 -- }}}
 
 -- {{{ Key bindings
+local focus_history_index = 0
+
+awful.keygrabber {
+    keybindings = {
+        { {'Mod1'}, 'Tab',
+            function()
+                local next_client = awful.client.focus.history.get(awful.screen.focused(), focus_history_index)
+                if next_client == nil then
+                    -- this would be much cleaner if I could get the number of clients in a screen's history
+                    -- Not sure how to do that reliably though... are all the clients always in the history...?
+                    focus_history_index = 0
+                    next_client = awful.client.focus.history.get(awful.screen.focused(), focus_history_index)
+                end
+
+                client.focus = next_client
+                if client.focus then
+                    client.focus:raise()
+                end
+                focus_history_index = focus_history_index + 1
+            end
+        },
+    },
+
+    stop_key           = 'Mod1',
+    stop_event         = 'release',
+    start_callback     = function()
+        awful.client.focus.history.disable_tracking()
+        focus_history_index = 1
+    end,
+    stop_callback      = function()
+        if client.focus then
+            awful.client.focus.history.add(client.focus)
+        end
+        awful.client.focus.history.enable_tracking()
+    end,
+    export_keybindings = true,
+}
+
 globalkeys = gears.table.join(
     awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
               {description="show help", group="awesome"}),
@@ -264,14 +302,6 @@ globalkeys = gears.table.join(
               {description = "focus the previous screen", group = "screen"}),
     awful.key({ modkey,           }, "u", awful.client.urgent.jumpto,
               {description = "jump to urgent client", group = "client"}),
-    awful.key({ "Mod1",           }, "Tab",
-        function ()
-            awful.client.focus.history.previous()
-            if client.focus then
-                client.focus:raise()
-            end
-        end,
-        {description = "go back", group = "client"}),
 
     -- Standard program
     awful.key({ modkey,           }, "Return", function () awful.spawn(terminal) end,
