@@ -14,6 +14,7 @@ local beautiful = require("beautiful")
 local naughty = require("naughty")
 local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup")
+local window_switcher = require("widgets.window_switcher")
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
@@ -229,24 +230,23 @@ root.buttons(gears.table.join(
 
 -- {{{ Key bindings
 local focus_history_index = 0
+local switcher = awful.popup {
+    widget = window_switcher,
+
+    border_color = '#00000000',
+    border_width = 0,
+    placement    = awful.placement.centered,
+    shape        = gears.shape.rectangle,
+    visible      = false,
+    bg           = "#00000000",
+    ontop        = true
+}
 
 awful.keygrabber {
     keybindings = {
         { {'Mod1'}, 'Tab',
             function()
-                local next_client = awful.client.focus.history.get(awful.screen.focused(), focus_history_index)
-                if next_client == nil then
-                    -- this would be much cleaner if I could get the number of clients in a screen's history
-                    -- Not sure how to do that reliably though... are all the clients always in the history...?
-                    focus_history_index = 0
-                    next_client = awful.client.focus.history.get(awful.screen.focused(), focus_history_index)
-                end
-
-                client.focus = next_client
-                if client.focus then
-                    client.focus:raise()
-                end
-                focus_history_index = focus_history_index + 1
+                switcher.widget:next()
             end
         },
     },
@@ -254,14 +254,16 @@ awful.keygrabber {
     stop_key           = 'Mod1',
     stop_event         = 'release',
     start_callback     = function()
-        awful.client.focus.history.disable_tracking()
-        focus_history_index = 1
+        -- widget won't actually be redraw if visible == false,
+        -- so make it visible, but first hide it with opacity = 0
+        switcher.widget:refresh()
+        switcher.widget:next()
+        switcher.visible = true
     end,
     stop_callback      = function()
-        if client.focus then
-            awful.client.focus.history.add(client.focus)
-        end
-        awful.client.focus.history.enable_tracking()
+        switcher.widget._private.container:set_children({})
+        switcher.visible = false
+        switcher.widget:selected():raise()
     end,
     export_keybindings = true,
 }
