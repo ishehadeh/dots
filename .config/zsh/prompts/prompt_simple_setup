@@ -5,7 +5,7 @@ prompt_simple_help () {
 }
 
 prompt_simple_setup () {
-  PS1='%n@%m %~/>'
+  PS1='%n@%m %~/> '
   prompt_opts=(cr subst percent)
 }
 
