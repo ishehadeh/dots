@@ -242,6 +242,65 @@ local switcher = awful.popup {
     ontop        = true
 }
 
+local brightness_meter = awful.popup {
+    widget = wibox.widget {
+        {
+            max_value     = 1,
+            value         = 0,
+            shape         = gears.shape.rounded_bar,
+
+
+            background_color = "#BAD4D3",
+            color            = "#00E0DD",
+            widget           = wibox.widget.progressbar,
+        },
+        forced_height = 125,
+        forced_width  = 10,
+        direction     = 'east',
+        layout        = wibox.container.rotate,
+    },
+    preferred_position = "bottom",
+    preferred_anchors = "back",
+    offset = {
+        y = 20,
+        x = -20,
+    },
+
+    ontop = true,
+    shape = gears.shape.rounded_bar,
+    border_color = '#ffffff',
+    border_width = 0,
+    visible = false,
+    type = "notification"
+}
+brightness_meter:move_next_to(awful.screen:focused().mywibox)
+brightness_meter.visible = false
+
+local backlight = require("system.backlight")
+local hide_backlight_timer = gears.timer {
+    timeout   = 2,
+    callback  = function()
+        brightness_meter.visible = false
+    end
+}
+function shift_brightness(offset)
+    -- TODO: use a global brightness value so all displays are set to the same brightness 
+    for _, device in ipairs(backlight.list()) do
+        local current = device:get_brightness()
+        local new_brightness = math.max(0, math.min(1, current + offset))
+        device:set_brightness(new_brightness)
+
+        brightness_meter.widget:get_children()[1]:set_value(new_brightness)
+    end
+    brightness_meter.visible = true
+
+    -- restart the hide timer
+    hide_backlight_timer:stop()
+    hide_backlight_timer:start()
+
+end
+
+
 awful.keygrabber {
     keybindings = {
         { {'Mod1'}, 'Tab',
@@ -267,8 +326,18 @@ awful.keygrabber {
 }
 
 globalkeys = gears.table.join(
+    -- Brightness
+    awful.key({}, "#232", function() shift_brightness(-.05) end,
+              {description="brightness down", group="function"}),
+
+    awful.key({}, "#233", function() shift_brightness(.05) end,
+              {description="brightness up", group="function"}),
+
+    -- Help
     awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
               {description="show help", group="awesome"}),
+
+    -- Tags
     awful.key({ modkey,           }, "Left",   awful.tag.viewprev,
               {description = "view previous", group = "tag"}),
     awful.key({ modkey,           }, "Right",  awful.tag.viewnext,
