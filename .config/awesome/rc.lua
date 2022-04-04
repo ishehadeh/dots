@@ -254,8 +254,6 @@ awful.keygrabber {
     stop_key           = 'Mod1',
     stop_event         = 'release',
     start_callback     = function()
-        -- widget won't actually be redraw if visible == false,
-        -- so make it visible, but first hide it with opacity = 0
         switcher.widget:refresh()
         switcher.widget:next()
         switcher.visible = true
