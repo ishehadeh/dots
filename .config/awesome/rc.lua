@@ -301,6 +301,58 @@ function shift_brightness(offset)
 end
 
 
+local volume_meter = awful.popup {
+    widget = wibox.widget {
+        {
+            max_value     = 1,
+            value         = 0,
+            shape         = gears.shape.rounded_bar,
+
+
+            background_color = "#BAD4D3",
+            color            = "#00E0DD",
+            widget           = wibox.widget.progressbar,
+        },
+        forced_height = 125,
+        forced_width  = 10,
+        direction     = 'east',
+        layout        = wibox.container.rotate,
+    },
+    preferred_position = "bottom",
+    preferred_anchors = "back",
+    offset = {
+        y = 20,
+        x = -20,
+    },
+
+    ontop = true,
+    shape = gears.shape.rounded_bar,
+    border_color = '#ffffff',
+    border_width = 0,
+    visible = false,
+    type = "notification"
+}
+volume_meter:move_next_to(awful.screen:focused().mywibox)
+volume_meter.visible = false
+
+local pactl = require("system.pactl")
+local hide_volume_timer = gears.timer {
+    timeout   = 2,
+    callback  = function()
+        volume_meter.visible = false
+    end
+}
+function shift_volume(offset)
+    pactl.sink.set_volume(string.format("%+f%%", offset))
+    volume_meter.widget:get_children()[1]:set_value(pactl.sink.get_volume().percent / 100)
+    volume_meter.visible = true
+
+    -- restart the hide timer
+    hide_volume_timer:stop()
+    hide_volume_timer:start()
+end
+
+
 awful.keygrabber {
     keybindings = {
         { {'Mod1'}, 'Tab',
@@ -332,6 +384,12 @@ globalkeys = gears.table.join(
 
     awful.key({}, "#233", function() shift_brightness(.05) end,
               {description="brightness up", group="function"}),
+
+    awful.key({}, "#122", function() shift_volume(-1) end,
+              {description="volume down", group="function"}),
+  
+    awful.key({}, "#123", function() shift_volume(1) end,
+              {description="volume up", group="function"}),
 
     -- Help
     awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
