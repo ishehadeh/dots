@@ -15,6 +15,7 @@ local naughty = require("naughty")
 local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup")
 local window_switcher = require("widgets.window_switcher")
+local meter_notification = require("widgets.meter_notification")
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
@@ -242,114 +243,30 @@ local switcher = awful.popup {
     ontop        = true
 }
 
-local brightness_meter = awful.popup {
-    widget = wibox.widget {
-        {
-            max_value     = 1,
-            value         = 0,
-            shape         = gears.shape.rounded_bar,
-
-
-            background_color = "#BAD4D3",
-            color            = "#00E0DD",
-            widget           = wibox.widget.progressbar,
-        },
-        forced_height = 125,
-        forced_width  = 10,
-        direction     = 'east',
-        layout        = wibox.container.rotate,
-    },
-    preferred_position = "bottom",
-    preferred_anchors = "back",
-    offset = {
-        y = 20,
-        x = -20,
-    },
-
-    ontop = true,
-    shape = gears.shape.rounded_bar,
-    border_color = '#ffffff',
-    border_width = 0,
-    visible = false,
-    type = "notification"
-}
+local brightness_meter = meter_notification()
 brightness_meter:move_next_to(awful.screen:focused().mywibox)
 brightness_meter.visible = false
 
 local backlight = require("system.backlight")
-local hide_backlight_timer = gears.timer {
-    timeout   = 2,
-    callback  = function()
-        brightness_meter.visible = false
-    end
-}
 function shift_brightness(offset)
     -- TODO: use a global brightness value so all displays are set to the same brightness 
     for _, device in ipairs(backlight.list()) do
         local current = device:get_brightness()
         local new_brightness = math.max(0, math.min(1, current + offset))
         device:set_brightness(new_brightness)
-
-        brightness_meter.widget:get_children()[1]:set_value(new_brightness)
+        brightness_meter:show(new_brightness)
     end
-    brightness_meter.visible = true
-
-    -- restart the hide timer
-    hide_backlight_timer:stop()
-    hide_backlight_timer:start()
-
 end
 
 
-local volume_meter = awful.popup {
-    widget = wibox.widget {
-        {
-            max_value     = 1,
-            value         = 0,
-            shape         = gears.shape.rounded_bar,
-
-
-            background_color = "#BAD4D3",
-            color            = "#00E0DD",
-            widget           = wibox.widget.progressbar,
-        },
-        forced_height = 125,
-        forced_width  = 10,
-        direction     = 'east',
-        layout        = wibox.container.rotate,
-    },
-    preferred_position = "bottom",
-    preferred_anchors = "back",
-    offset = {
-        y = 20,
-        x = -20,
-    },
-
-    ontop = true,
-    shape = gears.shape.rounded_bar,
-    border_color = '#ffffff',
-    border_width = 0,
-    visible = false,
-    type = "notification"
-}
+local volume_meter = meter_notification()
 volume_meter:move_next_to(awful.screen:focused().mywibox)
 volume_meter.visible = false
 
 local pactl = require("system.pactl")
-local hide_volume_timer = gears.timer {
-    timeout   = 2,
-    callback  = function()
-        volume_meter.visible = false
-    end
-}
 function shift_volume(offset)
     pactl.sink.set_volume(string.format("%+f%%", offset))
-    volume_meter.widget:get_children()[1]:set_value(pactl.sink.get_volume().percent / 100)
-    volume_meter.visible = true
-
-    -- restart the hide timer
-    hide_volume_timer:stop()
-    hide_volume_timer:start()
+    volume_meter:show(pactl.sink.get_volume().percent / 100)
 end
 
 
