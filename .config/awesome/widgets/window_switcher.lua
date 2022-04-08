@@ -135,8 +135,7 @@ local function make_client_preview(client, w, h)
         {
             {
                 markup = "<span foreground='white'>" .. gears.string.xml_escape(client.name) .. "</span>",
-                font = "Montserrat Bold",
-                font_size = 14,
+                font = "Montserrat Bold 14",
                 align = "center",
                 fg = "#ffffff",
                 ellipsize = "end",
