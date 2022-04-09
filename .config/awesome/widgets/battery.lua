@@ -31,7 +31,6 @@ local function new_battery(device_name)
         autostart = true,
         callback  = function()
             widget:update()
-            widget._private.timer:start()
         end
     }
 
