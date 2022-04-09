@@ -199,22 +199,11 @@ end
 ---@param index integer index to move to
 function window_switcher.set_index(self, index)
     assert(math.type(index) == "integer", "WindowSwitcher:set_index() index must be an integer!")
+    self._private.index = gears.math.cycle(#self._private.clients, index) 
 
-    -- theres a faster way to do a wrapping add in a single statement, but I think this is more clear
-    local clients_count = #self._private.clients
-    if clients_count == 0 then
-        index = 0
+    if not self._private.index then
         return
     end
-
-    while index > clients_count do
-        index = index - clients_count
-    end
-    while index < 1 do
-        index = index + clients_count
-    end
-
-    self._private.index = index
 
     -- this could brea very, very easily
     -- FIXME: use something a little more stable
