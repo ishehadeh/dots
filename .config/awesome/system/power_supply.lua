@@ -76,7 +76,6 @@ end
 --
 -- @returns int the device's current energy
 function power_supply:get_energy()
-    require("gears.debug").dump(self)
     return read_number_file(self.base_path .. "/energy_now")
 end
 
