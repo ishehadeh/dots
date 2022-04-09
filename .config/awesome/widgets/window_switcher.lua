@@ -206,10 +206,11 @@ function window_switcher.set_index(self, index)
         index = 0
         return
     end
-    if index > clients_count then
-        index = index % clients_count
+
+    while index > clients_count do
+        index = index - clients_count
     end
-    while index < 0 do
+    while index < 1 do
         index = index + clients_count
     end
 
@@ -253,7 +254,7 @@ function window_switcher.refresh(self)
         children[i] = make_client_preview(client, preview_width, height)
     end
     self._private.container:set_children(children)
-    self:set_index(0)
+    self:set_index(1)
 end
 
 --- Shift by the given offset

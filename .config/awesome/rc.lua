@@ -282,13 +282,14 @@ awful.keygrabber {
     stop_event         = 'release',
     start_callback     = function()
         switcher.widget:refresh()
-        switcher.widget:next()
         switcher.visible = true
     end,
     stop_callback      = function()
+        if switcher.widget:selected() then
+        	switcher.widget:selected():raise()
+        end
         switcher.widget._private.container:set_children({})
         switcher.visible = false
-        switcher.widget:selected():raise()
     end,
     export_keybindings = true,
 }
