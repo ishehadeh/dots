@@ -28,8 +28,10 @@ local function new_battery(device_name)
     widget._private.text = text
     widget._private.timer = gears.timer {
         timeout   = 5,
+        autostart = true,
         callback  = function()
             widget:update()
+            widget._private.timer:start()
         end
     }
 
