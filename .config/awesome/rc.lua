@@ -16,6 +16,8 @@ local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup")
 local window_switcher = require("widgets.window_switcher")
 local meter_notification = require("widgets.meter_notification")
+local cairo = require("lgi").cairo
+
 -- Enable hotkeys help widget for VIM and other apps
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
@@ -592,6 +594,24 @@ end)
 
 local doubleclick = require("doubleclick")
 
+local function desaturated_clienticon(c, desaturation)
+    local ci = awful.widget.clienticon(c)
+    local draw = ci.draw
+    local desaturated_draw = function(self, context, cr, width, height)
+        local mask_surf = cairo.ImageSurface.create(cairo.Format.A8, width, height)
+        local mask_cr = cairo.Context(mask_surf)
+        
+        draw(self, context, cr, width, height)
+        mask_cr:set_source(cr:get_source())
+        mask_cr:paint()
+
+        cr:set_source_rgba(0, 0, 0, desaturation)
+        cr:set_operator(cairo.Operator.HSL_SATURATION)
+        cr:mask(mask_cr:get_source())
+    end
+    return gears.table.crush(ci, { draw = desaturated_draw }, true)
+end
+
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
 client.connect_signal("request::titlebars", function(c)
     -- buttons for the titlebar
@@ -603,7 +623,7 @@ client.connect_signal("request::titlebars", function(c)
                 c:emit_signal("request::activate", "titlebar", {raise = true})
 
                 doubleclick:ensure_single_click(function()
-                awful.mouse.client.move(c) 
+                    awful.mouse.client.move(c)
                 end)
             end
         end),
@@ -613,29 +633,36 @@ client.connect_signal("request::titlebars", function(c)
         end)
     )
 
-    awful.titlebar(c) : setup {
-        { -- Left
-            awful.titlebar.widget.iconwidget(c),
-            buttons = buttons,
-            layout  = wibox.layout.fixed.horizontal
+
+    awful.titlebar(c, {
+        bg_focus = "#fbf1c7",
+        bg_normal = "#ebdbb2",
+        fg = "#3c3836",
+        position = "top",
+        size = 25
+    }) : setup {
+        {
+            desaturated_clienticon(c, .75),
+            top = 4,
+            right = 4,
+            left = 4,
+            bottom = 4,
+            widget = wibox.container.margin,
         },
-        { -- Middle
-            { -- Title
-                align  = "center",
-                widget = awful.titlebar.widget.titlewidget(c)
+        {
+            {
+                font = "IBM Plex Sans Light 8",
+                fg = "#282828",
+                widget = awful.titlebar.widget.titlewidget(c),
             },
-            buttons = buttons,
-            layout  = wibox.layout.flex.horizontal
+
+            left = 5,
+            -- top  = 6,
+            widget = wibox.container.margin,
         },
-        { -- Right
-            awful.titlebar.widget.floatingbutton (c),
-            awful.titlebar.widget.maximizedbutton(c),
-            awful.titlebar.widget.stickybutton   (c),
-            awful.titlebar.widget.ontopbutton    (c),
-            awful.titlebar.widget.closebutton    (c),
-            layout = wibox.layout.fixed.horizontal()
-        },
-        layout = wibox.layout.align.horizontal
+
+        buttons = buttons,
+        layout  = wibox.layout.fixed.horizontal
     }
 end)
 
@@ -644,6 +671,6 @@ client.connect_signal("mouse::enter", function(c)
     c:emit_signal("request::activate", "mouse_enter", {raise = false})
 end)
 
-client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
-client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+client.connect_signal("focus", function(c) c.border_color = "#928374" end)
+client.connect_signal("unfocus", function(c) c.border_color = "#7c6f64" end)
 -- }}}
