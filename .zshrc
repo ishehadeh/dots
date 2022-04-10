@@ -42,6 +42,10 @@ SAVEHIST="$HISTSIZE"
 
 # Environemnt
 # ------------------
+## XDG dirs
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CONFIG_HOME="$HOME/.config"
+
 ## Locale
 
 export LANG="en_US.UTF-8"
