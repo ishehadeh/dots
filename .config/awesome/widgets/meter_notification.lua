@@ -53,8 +53,7 @@ function meter_notification:show(value)
         self.widget:get_children()[1]:set_value(value)
     end
     self.visible = true
-    self._private.hide_timer:stop()
-    self._private.hide_timer:start()
+    self._private.hide_timer:again()
 end
 
 return setmetatable(meter_notification, {__call = new})
