@@ -49,7 +49,7 @@ end
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
-beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
+beautiful.init(gears.filesystem.get_xdg_config_home() .. "awesome/themes/gruvbox/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
 terminal = os.getenv("TERM") or "xterm"
@@ -635,34 +635,51 @@ client.connect_signal("request::titlebars", function(c)
 
 
     awful.titlebar(c, {
-        bg_focus = "#fbf1c7",
-        bg_normal = "#ebdbb2",
-        fg = "#3c3836",
         position = "top",
         size = 25
     }) : setup {
         {
-            desaturated_clienticon(c, .75),
-            top = 4,
-            right = 4,
-            left = 4,
-            bottom = 4,
-            widget = wibox.container.margin,
+           {
+                desaturated_clienticon(c, .75),
+                top = 4,
+                right = 4,
+                left = 4,
+                bottom = 4,
+                widget = wibox.container.margin,
+            },
+            {
+                {
+                    widget = awful.titlebar.widget.titlewidget(c),
+                },
+
+                left = 5,
+                widget = wibox.container.margin,
+            },
+
+            buttons = buttons,
+            layout  = wibox.layout.fixed.horizontal
+        },
+        {
+            buttons = buttons,
+            layout  = wibox.layout.fixed.horizontal
         },
         {
             {
-                font = "IBM Plex Sans Light 8",
-                fg = "#282828",
-                widget = awful.titlebar.widget.titlewidget(c),
+                awful.titlebar.widget.maximizedbutton(c),
+                awful.titlebar.widget.minimizebutton(c),
+                awful.titlebar.widget.closebutton(c),
+                buttons = buttons,
+                spacing = 7,
+                layout  = wibox.layout.fixed.horizontal
             },
-
-            left = 5,
-            -- top  = 6,
+            top = 6,
+            right = 8,
+            left = 6,
+            bottom = 6,
             widget = wibox.container.margin,
         },
 
-        buttons = buttons,
-        layout  = wibox.layout.fixed.horizontal
+        layout  = wibox.layout.align.horizontal
     }
 end)
 
@@ -671,6 +688,6 @@ client.connect_signal("mouse::enter", function(c)
     c:emit_signal("request::activate", "mouse_enter", {raise = false})
 end)
 
-client.connect_signal("focus", function(c) c.border_color = "#928374" end)
-client.connect_signal("unfocus", function(c) c.border_color = "#7c6f64" end)
+client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
+client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
