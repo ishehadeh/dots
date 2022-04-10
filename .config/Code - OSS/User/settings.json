@@ -5,4 +5,5 @@
     // "editor.smoothScrolling": true,
     "editor.mouseWheelScrollSensitivity": 1.5,
     "security.workspace.trust.untrustedFiles": "open",
+    "window.menuBarVisibility": "hidden",
 }
