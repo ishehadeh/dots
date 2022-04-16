@@ -10,7 +10,7 @@ local gears = require("gears")
 local themes_path = gears.filesystem.get_xdg_config_home() .. "awesome/themes/"
 
 local theme_name = "gruvbox"
-local theme_path = themes_path .. theme_name
+local theme_path = themes_path .. theme_name .. "/"
 
 local theme = {}
 

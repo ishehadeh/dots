@@ -162,11 +162,44 @@ local function set_wallpaper(s)
     end
 end
 
+local function curve_divider_shape(cr, width, height)
+    local function pw(x) return width * x end
+    local function ph(x) return height * x end
+    cr:move_to(0, ph(.05))
+    cr:curve_to(pw(.7), ph(.1), pw(.5), ph(1.1), width, height)
+    cr:curve_to(pw(.2), ph(1.1), pw(.4), ph(.1), 0, ph(.1))
+
+    cr:close_path()
+end
+
+local function section_shape(cr, width, height)
+    local divider_width = 35
+    local bar_height = .1
+    local divider_ctrl = {
+        {{0.8, .3}, {0.6, 1.1}},
+        {{0.2, 1.1}, {0.4, .3}}
+    }
+    local bar_height_abs = bar_height * height
+    local divider_ctrl_abs = {}
+    for i, pair in ipairs(divider_ctrl) do
+        divider_ctrl_abs[i] = {}
+        for pt_i, coord in ipairs(pair) do
+            divider_ctrl_abs[i][pt_i] = { width + (1 - coord[1] * divider_width), height * coord[2] }
+        end
+    end
+    cr:move_to(0, bar_height_abs)
+    cr:line_to(width - divider_width, bar_height_abs)
+    cr:curve_to(divider_ctrl_abs[1][1][1], divider_ctrl_abs[1][1][2], divider_ctrl_abs[1][2][1], divider_ctrl_abs[1][2][2], width, height - bar_height_abs)
+    cr:curve_to(divider_ctrl_abs[2][1][1], divider_ctrl_abs[2][1][2], divider_ctrl_abs[2][2][1], divider_ctrl_abs[2][2][2], width - divider_width, 0)
+    cr:line_to(0, 0)
+
+    cr:close_path()
+end
+
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry", set_wallpaper)
 
 local bat0 = require("widgets.battery")("BAT0")
-
 awful.screen.connect_for_each_screen(function(s)
     -- Wallpaper
     set_wallpaper(s)
@@ -201,6 +234,13 @@ awful.screen.connect_for_each_screen(function(s)
     -- Create the wibox
     s.mywibox = awful.wibar({ position = "top", screen = s })
 
+    -- local img = cairo.ImageSurface.create(cairo.Format.ARGB32, 100, 30)
+    -- local img_cr = cairo.Context(img)
+    -- section_shape(img_cr, 100, 30)
+    -- local r,g,b,a = gears.color.parse_color("#f9f5d7")
+    -- img_cr:set_source_rgba(r,g,b,a)
+    -- img_cr:fill()
+
     -- Add widgets to the wibox
     s.mywibox:setup {
         layout = wibox.layout.align.horizontal,
@@ -209,6 +249,10 @@ awful.screen.connect_for_each_screen(function(s)
             mylauncher,
             s.mytaglist,
             s.mypromptbox,
+            -- wibox.widget {
+            --     image = img,
+            --     widget = wibox.widget.imagebox
+            -- },
         },
         s.mytasklist, -- Middle widget
         { -- Right widgets
@@ -298,10 +342,10 @@ awful.keygrabber {
 
 globalkeys = gears.table.join(
     -- Brightness
-    awful.key({}, "#232", function() shift_brightness(-.05) end,
+    awful.key({}, "#232", function() shift_brightness(-.01) end,
               {description="brightness down", group="function"}),
 
-    awful.key({}, "#233", function() shift_brightness(.05) end,
+    awful.key({}, "#233", function() shift_brightness(.01) end,
               {description="brightness up", group="function"}),
 
     awful.key({}, "#122", function() shift_volume(-1) end,
