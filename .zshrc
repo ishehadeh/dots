@@ -31,6 +31,10 @@ bindkey -e
 bindkey ';5C' forward-word
 bindkey ';5D' backward-word
 
+# Search history on up/down
+bindkey '^[[A' up-line-or-search
+bindkey '^[[B' down-line-or-search
+
 prompt simple
 
 # History
