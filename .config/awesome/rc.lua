@@ -292,15 +292,20 @@ local brightness_meter = meter_notification()
 brightness_meter:move_next_to(awful.screen:focused().mywibox)
 brightness_meter.visible = false
 
-local backlight = require("system.backlight")
-function shift_brightness(offset)
-    -- TODO: use a global brightness value so all displays are set to the same brightness 
-    for _, device in ipairs(backlight.list()) do
-        local current = device:get_brightness()
-        local new_brightness = math.max(0, math.min(1, current + offset))
-        device:set_brightness(new_brightness)
-        brightness_meter:show(new_brightness)
+local backlight = require("system.backlight").list()[1]
+local backlight_brightness = backlight:get_brightness()
+local backlight_update_timer = gears.timer {
+    timeout   = .5,
+    callback  = function()
+        backlight:set_brightness(backlight_brightness)
     end
+}
+function shift_brightness(offset)
+        backlight_brightness = math.max(0, math.min(1, backlight_brightness + offset))
+        brightness_meter:show(backlight_brightness)
+        if not backlight_update_timer.started then
+            backlight_update_timer:start()
+        end
 end
 
 
