@@ -226,7 +226,7 @@ draw_bold_text_with_bright_colors: false
   #thickness: 0.15
 
 # Live config reload (changes require restart)
-#live_config_reload: true
+live_config_reload: true
 
 # Shell
 #
