@@ -1,6 +1,8 @@
 local gears = require("gears")
 
-local doubleclick = {}
+local doubleclick = {
+    _single_click_actions = {}
+}
 
 function doubleclick:__call()
     if self._timer then
