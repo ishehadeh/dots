@@ -74,3 +74,9 @@ export PATH="$HOME/.local/bin:$PATH" # prioritize ~/.local/bin over system paths
 
 ## Set hledger journal
 export LEDGER_FILE="$HOME/.ledger/.hledger.journal"
+
+# Aliases
+# ------------------
+
+alias copy="xclip -selection clipboard -in"
+alias paste="xclip -selection clipboard -out"
