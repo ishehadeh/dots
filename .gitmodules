@@ -1,0 +1,3 @@
+[submodule "themes/arc-theme-gruvbox"]
+	path = themes/arc-theme-gruvbox
+	url = git@github.com:ishehadeh/arc-theme-gruvbox
