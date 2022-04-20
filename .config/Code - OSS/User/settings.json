@@ -6,5 +6,5 @@
     "editor.mouseWheelScrollSensitivity": 1.5,
     "security.workspace.trust.untrustedFiles": "open",
     "window.menuBarVisibility": "hidden",
-    "workbench.colorTheme": "Gruvbox Light Medium"
+    "workbench.colorTheme": "Gruvbox Light Hard"
 }
