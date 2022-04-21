@@ -75,7 +75,7 @@ theme.fg_urgent     = palette.red
 theme.fg_minimize   = theme.fg_normal
 
 theme.useless_gap   = dpi(0)
-theme.border_width  = dpi(1.5)
+theme.border_width  = dpi(1)
 theme.border_normal = palette.bg3
 theme.border_focus  = palette.bg2
 theme.border_marked = palette.green
