@@ -675,7 +675,7 @@ client.connect_signal("request::titlebars", function(c)
                     if c.maximized then
                         c.maximized = false
                     end
-                    awful.mouse.client.move(c)
+                    awful.mouse.client.move()
                 end)
             end
         end),
