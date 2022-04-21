@@ -672,6 +672,9 @@ client.connect_signal("request::titlebars", function(c)
                 c:emit_signal("request::activate", "titlebar", {raise = true})
 
                 doubleclick:ensure_single_click(function()
+                    if c.maximized then
+                        c.maximized = false
+                    end
                     awful.mouse.client.move(c)
                 end)
             end
