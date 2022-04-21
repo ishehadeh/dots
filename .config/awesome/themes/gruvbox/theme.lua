@@ -85,7 +85,8 @@ theme.border_marked = palette.green
 -- defined, the sets are:
 -- taglist_[bg|fg]_[focus|urgent|occupied|empty|volatile]
 -- tasklist_[bg|fg]_[focus|urgent]
-theme.titlebar_bg_focus = palette.bg1
+theme.titlebar_bg_focus = palette.bg0_h
+theme.titlebar_bg_focus = palette.bg0_h
 -- tooltip_[font|opacity|fg_color|bg_color|border_width|border_color]
 -- mouse_finder_[color|timeout|animate_timeout|radius|factor]
 -- prompt_[fg|bg|fg_cursor|bg_cursor|font]
