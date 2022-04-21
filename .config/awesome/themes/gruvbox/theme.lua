@@ -20,8 +20,8 @@ local palette = {
     bg = "#fbf1c7", -- bg0
     fg = "#3c3836", -- fg1
 
-    bg0_h = "f9f5d7",
-    bg0_s = "f2e5bc",
+    bg0_h = "#f9f5d7",
+    bg0_s = "#f2e5bc",
     bg0 = "#fbf1c7",
     bg1 = "#ebdbb2",
     bg2 = "#d5c4a1",
