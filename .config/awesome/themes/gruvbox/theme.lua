@@ -63,9 +63,9 @@ local palette = {
 
 theme.font          = "IBM Plex Sans 9"
 
-theme.bg_normal     = palette.bg1
-theme.bg_focus      = palette.bg
-theme.bg_urgent     = palette.bg
+theme.bg_normal     = palette.bg0_h
+theme.bg_focus      = palette.bg1
+theme.bg_urgent     = palette.red
 theme.bg_minimize   = palette.bg4
 theme.bg_systray    = theme.bg_normal
 
