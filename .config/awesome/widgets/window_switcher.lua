@@ -129,7 +129,7 @@ local function make_client_preview(client, w, h)
             forced_width = w,
             forced_height = h,
 
-            widget = wibox.widget.background,
+            widget = wibox.container.background,
         },
 
         {
