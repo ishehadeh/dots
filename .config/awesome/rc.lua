@@ -313,7 +313,8 @@ local switcher = awful.popup {
     shape        = gears.shape.rectangle,
     visible      = false,
     bg           = "#00000000",
-    ontop        = true
+    ontop        = true,
+    type         = "popup_menu",
 }
 
 local brightness_meter = meter_notification()
