@@ -113,6 +113,7 @@ mytextclock = wibox.widget.textclock()
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
                     awful.button({ }, 1, function(t) t:view_only() end),
+                    awful.button({ "Control" }, 1, function(t) awful.tag.viewtoggle(t) end),
                     awful.button({ modkey }, 1, function(t)
                                               if client.focus then
                                                   client.focus:move_to_tag(t)
@@ -645,9 +646,27 @@ awful.rules.rules = {
       }, properties = { floating = true }},
 
     -- Add titlebars to normal clients and dialogs
-    { rule_any = {type = { "normal", "dialog" }
-      }, properties = { titlebars_enabled = true }
+    {
+        rule_any = {
+            type = { "normal", "dialog" }
+        },
+        properties = { 
+            titlebars_enabled = true,
+        }
     },
+
+    {
+        rule_any = {
+            type = { "dialog" },
+        },
+        role = {
+            "pop-up",
+        },
+        properties = {
+            floating = true,
+            placement = awful.placement.centered,
+        }
+    }
 
     -- Set Firefox to always map on the tag named "2" on screen 1.
     -- { rule = { class = "Firefox" },
