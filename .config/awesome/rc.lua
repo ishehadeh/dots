@@ -200,12 +200,34 @@ end
 screen.connect_signal("property::geometry", set_wallpaper)
 
 local bat0 = require("widgets.battery")("BAT0")
+colors_tags_template = {
+    {
+        {
+            id = 'color_tag_icon',
+            widget = wibox.widget.imagebox,
+            resize = true,
+        },
+
+        top = 7,
+        bottom = 7,
+        widget = wibox.container.margin,
+    },
+    id = "background_role",
+    widget = wibox.widget.background,
+
+    create_callback = function(self, c3, index, objects) --luacheck: no unused args
+        self:get_children_by_id('color_tag_icon')[1].image = gears.surface.load_from_shape(32, 32, beautiful.color_tags.shape, beautiful.color_tags.colors[index])
+    end,
+    update_callback = function(self, c3, index, objects) --luacheck: no unused args
+        self:get_children_by_id('color_tag_icon')[1].image = gears.surface.load_from_shape(32, 32, beautiful.color_tags.shape, beautiful.color_tags.colors[index])
+    end,
+}
 awful.screen.connect_for_each_screen(function(s)
     -- Wallpaper
     set_wallpaper(s)
 
     -- Each screen has its own tag table.
-    awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
+    awful.tag({ "1", "2", "3", "4" }, s, awful.layout.layouts[1])
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
@@ -221,14 +243,15 @@ awful.screen.connect_for_each_screen(function(s)
     s.mytaglist = awful.widget.taglist {
         screen  = s,
         filter  = awful.widget.taglist.filter.all,
-        buttons = taglist_buttons
+        buttons = taglist_buttons,
+        widget_template = colors_tags_template,
     }
 
     -- Create a tasklist widget
     s.mytasklist = awful.widget.tasklist {
         screen  = s,
         filter  = awful.widget.tasklist.filter.currenttags,
-        buttons = tasklist_buttons
+        buttons = tasklist_buttons,
     }
 
     -- Create the wibox
@@ -247,7 +270,12 @@ awful.screen.connect_for_each_screen(function(s)
         { -- Left widgets
             layout = wibox.layout.fixed.horizontal,
             mylauncher,
-            s.mytaglist,
+            {
+                s.mytaglist,
+                left = 15,
+                right = 10,
+                widget = wibox.container.margin,
+            },
             s.mypromptbox,
             -- wibox.widget {
             --     image = img,

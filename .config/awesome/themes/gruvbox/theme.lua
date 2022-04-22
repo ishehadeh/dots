@@ -80,6 +80,11 @@ theme.border_normal = palette.bg3
 theme.border_focus  = palette.bg2
 theme.border_marked = palette.green
 
+theme.color_tags = {
+    colors = { palette.blue, palette.purple, palette.yellow, palette.orange },
+    shape = gears.shape.losange
+}
+
 -- There are other variable sets
 -- overriding the default one when
 -- defined, the sets are:
@@ -92,16 +97,14 @@ theme.titlebar_bg_focus = palette.bg0_h
 -- prompt_[fg|bg|fg_cursor|bg_cursor|font]
 -- hotkeys_[bg|fg|border_width|border_color|shape|opacity|modifiers_fg|label_bg|label_fg|group_margin|font|description_font]
 -- Example:
---theme.taglist_bg_focus = "#ff0000"
+theme.taglist_bg_focus = theme.bg_normal
 
+theme.taglist_spacing = 6
 -- Generate taglist squares:
-local taglist_square_size = dpi(4)
-theme.taglist_squares_sel = theme_assets.taglist_squares_sel(
-    taglist_square_size, theme.fg_normal
-)
-theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(
-    taglist_square_size, theme.fg_normal
-)
+theme.taglist_squares_sel       = gears.surface.load_from_shape(32, 32, gears.shape.transform(gears.shape.rectangle):translate(0, 24), theme.fg_normal)
+theme.taglist_squares_sel_empty = gears.surface.load_from_shape(32, 32, gears.shape.transform(gears.shape.rectangle):translate(0, 24), theme.fg_normal)
+theme.taglist_squares_resize = true
+-- theme.taglist_squares_unsel = gears.surface.load_from_shape(64, 2, gears.shape.rectangle, theme.fg_normal)
 
 -- Variables set for theming notifications:
 -- notification_font
