@@ -80,3 +80,34 @@ export LEDGER_FILE="$HOME/.ledger/.hledger.journal"
 
 alias copy="xclip -selection clipboard -in"
 alias paste="xclip -selection clipboard -out"
+
+# Functions
+# ------------------
+
+# source: https://github.com/sfinktah/bash/blob/master/rawurlencode.inc.sh
+urlencode() {
+    while read -r -k 1 -u 0 -d "\000" c; do
+        case "$c" in 
+            [-_.~a-zA-Z0-9]) 
+                echo -n "$c" 
+                ;;
+            *) 
+                printf '%%%02x' "'$c"
+                ;;
+        esac
+    done 
+}
+
+urldecode() {
+    while read -r -k 1 -u 0 -d "\000" c; do
+        case "$c" in 
+           %) 
+                read -r -k 2 -u 0 -d "\000" ccode
+                echo -n "\x$ccode"
+                ;;
+            *) 
+                echo -n "$c" 
+                ;;
+        esac
+    done
+}
