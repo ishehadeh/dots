@@ -708,7 +708,7 @@ local function desaturated_clienticon(c, desaturation)
     end
     return gears.table.crush(ci, { draw = desaturated_draw }, true)
 end
-
+ 
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
 client.connect_signal("request::titlebars", function(c)
     -- buttons for the titlebar
@@ -720,7 +720,7 @@ client.connect_signal("request::titlebars", function(c)
                 c:emit_signal("request::activate", "titlebar", {raise = true})
 
                 doubleclick:ensure_single_click(function()
-                    if c.maximized then
+                    if c and c.maximized then
                         c.maximized = false
                     end
                     awful.mouse.client.move()
