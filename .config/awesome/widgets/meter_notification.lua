@@ -8,19 +8,32 @@ local function new()
     local popup = awful.popup {
         widget = wibox.widget {
             {
-                max_value     = 1,
-                value         = 0,
-                shape         = gears.shape.rounded_bar,
+                {
+                    {
+                        max_value     = 1,
+                        value         = 0,
+                        shape         = gears.shape.rectangle,
 
 
-                background_color = "#BAD4D3",
-                color            = "#00E0DD",
-                widget           = wibox.widget.progressbar,
+                        background_color = "#d5c4a1",
+                        color            = "#458588",
+                        widget           = wibox.widget.progressbar,
+                    },
+                    forced_height = 125,
+                    forced_width  = 4,
+                    direction     = 'east',
+
+                    layout        = wibox.container.rotate,
+                },
+                left = 6,
+                right = 6,
+
+                layout = wibox.container.margin
             },
-            forced_height = 125,
-            forced_width  = 10,
-            direction     = 'east',
-            layout        = wibox.container.rotate,
+
+            spacing = 5,
+
+            layout = wibox.layout.fixed.vertical
         },
         preferred_position = "bottom",
         preferred_anchors = "back",
@@ -29,8 +42,9 @@ local function new()
             x = -20,
         },
 
+        bg = "#00000000",
         ontop = true,
-        shape = gears.shape.rounded_bar,
+        shape = gears.shape.rectangle,
         border_color = '#ffffff',
         border_width = 0,
         visible = false,
@@ -50,7 +64,7 @@ end
 
 function meter_notification:show(value)
     if value then
-        self.widget:get_children()[1]:set_value(value)
+        self.widget:get_children()[1]:get_children()[1]:get_children()[1]:set_value(value)
     end
     self.visible = true
     self._private.hide_timer:again()
