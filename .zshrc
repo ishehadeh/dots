@@ -119,3 +119,6 @@ urldecode() {
     bc -l <<<"$@"
 }
 
+command-exists() {
+    command -v "$1" >/dev/null
+}
