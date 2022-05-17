@@ -1,0 +1,60 @@
+#!/usr/bin/bash
+
+rep() {
+    printf "%0.s$1" `seq 1 $2`
+}
+
+block_width() {
+    max_size=0
+    while read -r line; do
+        size=${#line}
+        if [[ $size -gt $max_size ]]; then
+            max_size=$size
+        fi
+    done <<< "$1"
+    echo "$max_size"
+}
+
+banner() {
+    text=`figlet -f smslant "Welcome   Back   $(whoami)"`
+    width=`simplify "round(min($(block_width "$text") * 1.3, $(tput cols)))"`
+
+    echo `rep '#' $width`
+    echo -e "\033[1;36m$text\033[0m"
+    echo `rep '#' $width`
+}
+
+info_message() {
+    echo -e "\033[1;36m$1\033[0m $2"
+}
+
+partition_percent_used() {
+    highlight_partition_percent `df -h $1 | grep -Po '[0-9]{1,3}(?=%)'`
+}
+
+highlight_partition_percent() {
+    if [[ $1 -gt 90 ]]; then
+		effect f="red" 
+    elif [[ $1 -gt 70 ]]; then
+		effect f="yellow"
+    fi
+	printf "%d%%" "$1"
+	effect !f
+	echo
+}
+
+info() {
+    mounts=$(cat /etc/fstab | awk '$1 ~ /UUID=[0-9\-a-fA-F]+/ && $2 ~ /(\/.*)+/ {print $2 }')
+    
+	info_message 'host' "   `whoami`@`hostname`"
+    info_message 'updates' "`pacman -Qqu | wc -l`/`pacman -Qq | wc -l`"
+    info_message 'partitions:'
+    for m in $mounts; do
+		info_message "    $m `partition_percent_used $m`"	
+    done | column -t
+}
+
+banner
+echo
+info
+cat /etc/motd
