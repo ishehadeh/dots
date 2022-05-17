@@ -111,3 +111,8 @@ urldecode() {
         esac
     done
 }
+
+'='() {
+    bc -l <<<"$@"
+}
+
