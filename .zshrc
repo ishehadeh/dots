@@ -122,3 +122,8 @@ urldecode() {
 command-exists() {
     command -v "$1" >/dev/null
 }
+
+# Completions
+# ------------------
+
+command-exists bw && eval "$(bw completion --shell zsh); compdef _bw bw;"
