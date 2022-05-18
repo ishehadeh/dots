@@ -55,9 +55,6 @@ export XDG_CONFIG_HOME="$HOME/.config"
 export LANG="en_US.UTF-8"
 export LC_CTYPE="$LANG"
 
-## Utility Functions
-exists() { (( $+commands[$1] )); }
-
 ## Applications
 export VISUAL="micro"
 export EDITOR="$VISUAL"
@@ -119,9 +116,7 @@ urldecode() {
     bc -l <<<"$@"
 }
 
-command-exists() {
-    command -v "$1" >/dev/null
-}
+command-exists() { (( $+commands[$1] )); }
 
 # Completions
 # ------------------
