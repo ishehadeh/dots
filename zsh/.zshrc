@@ -81,6 +81,11 @@ alias paste="xclip -selection clipboard -out"
 # Always use a common terminal when ssh'ing
 alias ssh="TERM=xterm ssh"
 
+# Language Version Manager Config
+# ------------------
+
+test -f "$HOME/.ghcup/env" && source "$HOME/.ghcup/env"
+
 # Functions
 # ------------------
 
