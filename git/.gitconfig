@@ -1,3 +1,6 @@
 [user]
 	name = Ian Shehadeh
 	email = IanShehadeh2020@gmail.com
+
+[init]
+        defaultBranch = main
