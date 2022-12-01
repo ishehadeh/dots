@@ -1,8 +1,0 @@
-[Unit]
-Description=pacman -Sy
-
-[Service]
-ExecStart=/usr/sbin/pacman -Sy
-
-[Install]
-WantedBy=multi-user.target
