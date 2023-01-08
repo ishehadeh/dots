@@ -117,6 +117,14 @@ urldecode() {
     done
 }
 
+# Load definitions from '.env' into the current environment
+dotenv() {
+    local env_filename="${1:-'.env'}"
+    set -o allexport
+    source "$env_filename"
+    set +o allexport
+}
+
 '='() {
     bc -l <<<"$@"
 }
