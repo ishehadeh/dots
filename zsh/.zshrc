@@ -70,7 +70,8 @@ export LESS="--mouse --quiet --RAW-CONTROL-CHARS"
 export PATH="$HOME/.local/bin:$PATH" # prioritize ~/.local/bin over system paths
 
 ## Set hledger journal
-export LEDGER_FILE="$HOME/.ledger/.hledger.journal"
+export LEDGER_FILE="$HOME/.ledger/main.journal"
+
 
 # Aliases
 # ------------------
