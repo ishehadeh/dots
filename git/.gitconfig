@@ -3,4 +3,15 @@
 	email = IanShehadeh2020@gmail.com
 
 [init]
-        defaultBranch = main
+	defaultBranch = main
+
+[fetch]
+	# cleanup local inaccessible objects after running git fetch
+	prune = true
+
+[diff]
+	# show unchanged but moved lines as moved, not as deletion + insertion
+	colorMoved = zebra
+
+[pull]
+	rebase = true
