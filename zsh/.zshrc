@@ -1,3 +1,7 @@
+# zmodload zsh/zprof
+
+# zprof
+
 # The following lines were added by compinstall
 
 zstyle ':completion:*' auto-description 'specify: %d'
@@ -8,6 +12,8 @@ zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character t
 zstyle ':completion:*' list-suffixes true
 zstyle ':completion:*' matcher-list '' 'm:{[:lower:][:upper:]}={[:upper:][:lower:]}' 'l:|=* r:|=*'
 zstyle :compinstall filename '/home/ian/.zshrc'
+
+fpath=(~/.config/zsh/completions $fpath)
 
 autoload -Uz compinit
 compinit
@@ -75,6 +81,22 @@ export LEDGER_FILE="$HOME/.ledger/main.journal"
 export GUILE_LOAD_COMPILED_PATH="$GUILE_LOAD_COMPILED_PATH:/usr/lib64/guile/3.0/site-ccache"
 export GUILE_LOAD_PATH="$GUILE_LOAD_PATH:/usr/share/guile/site/3.0"
 
+get_npm_prefix() {
+    sed -rn 's/^[[:blank:]]*prefix[[:blank:]]*=[[:blank:]]*(.+)$/\1/p' ~/.npmrc
+}
+
+if [ -f ~/.npmrc ]; then
+    # npm config get prefix is really slow, so just get it the hacky way with grep
+    npm_prefix=$(grep '^[[:blank:]]*prefix[[:blank:]]*=[[:blank:]]*.*$' ~/.npmrc | cut -f2 -d=)
+
+    if [ -n "$npm_prefix" ]; then
+        export PATH="$PATH:$npm_prefix/bin"
+
+        # Preserve MANPATH if you already defined it somewhere in your config.
+        # Otherwise, fall back to `manpath` so we can inherit from `/etc/manpath`.
+        export MANPATH="${MANPATH-$(manpath)}:$npm_prefix/share/man"
+    fi
+fi
 
 # Aliases
 # ------------------
@@ -135,11 +157,11 @@ dotenv() {
 
 command-exists() { (( $+commands[$1] )); }
 
-# Completions
-# ------------------
 
-command-exists bw && eval "$(bw completion --shell zsh); compdef _bw bw;"
 
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+alias load-sdk="export SDKMAN_DIR=\"\$HOME/.sdkman\"; source \"\$SDKMAN_DIR/bin/sdkman-init.sh\""
+
+# zprof
+
+# opam configuration
+[[ ! -r /home/ian/.opam/opam-init/init.zsh ]] || source /home/ian/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
