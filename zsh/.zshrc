@@ -72,6 +72,9 @@ export PATH="$HOME/.local/bin:$PATH" # prioritize ~/.local/bin over system paths
 ## Set hledger journal
 export LEDGER_FILE="$HOME/.ledger/main.journal"
 
+export GUILE_LOAD_COMPILED_PATH="$GUILE_LOAD_COMPILED_PATH:/usr/lib64/guile/3.0/site-ccache"
+export GUILE_LOAD_PATH="$GUILE_LOAD_PATH:/usr/share/guile/site/3.0"
+
 
 # Aliases
 # ------------------
