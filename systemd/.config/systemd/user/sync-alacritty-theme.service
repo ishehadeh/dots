@@ -1,0 +1,10 @@
+[Unit]
+Description=Keep alacritty theme in sync with gnome
+
+[Service]
+# use sh to expand the home dir
+ExecStart=/bin/sh -c "~/.local/bin/sync-alacritty-theme"
+
+[Install]
+WantedBy=graphical.target
+
