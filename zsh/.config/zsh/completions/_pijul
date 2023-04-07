@@ -1,0 +1,914 @@
+#compdef pijul
+
+autoload -U is-at-least
+
+_pijul() {
+    typeset -A opt_args
+    typeset -a _arguments_options
+    local ret=1
+
+    if is-at-least 5.2; then
+        _arguments_options=(-s -S -C)
+    else
+        _arguments_options=(-s -C)
+    fi
+
+    local context curcontext="$curcontext" state line
+    _arguments "${_arguments_options[@]}" \
+'-h[Print help information]' \
+'--help[Print help information]' \
+'-V[Print version information]' \
+'--version[Print version information]' \
+":: :_pijul_commands" \
+"*::: :->pijul" \
+&& ret=0
+    case $state in
+    (pijul)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:pijul-command-$line[1]:"
+        case $line[1] in
+            (init)
+_arguments "${_arguments_options[@]}" \
+'--channel=[Set the name of the current channel (defaults to "main")]:CHANNEL: ' \
+'-k+[Project kind; if Pijul knows about your project kind, the .ignore file will be populated with a conservative list of commonly ignored entries. Example: `pijul init --kind=rust`]:KIND: ' \
+'--kind=[Project kind; if Pijul knows about your project kind, the .ignore file will be populated with a conservative list of commonly ignored entries. Example: `pijul init --kind=rust`]:KIND: ' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+'::path -- Path where the repository should be initalized:' \
+&& ret=0
+;;
+(clone)
+_arguments "${_arguments_options[@]}" \
+'--channel=[Set the remote channel]:CHANNEL: ' \
+'(--state)--change=[Clone this change and its dependencies]:CHANGE: ' \
+'(--change)--state=[Clone this state]:STATE: ' \
+'*--path=[Clone this path only]:PARTIAL_PATHS: ' \
+'-k[Do not check certificates (HTTPS remotes only, this option might be dangerous)]' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+':remote -- Clone this remote:' \
+'::path -- Path where to clone the repository. If missing, the inferred name of the remote repository is used:' \
+'::salt:' \
+&& ret=0
+;;
+(record)
+_arguments "${_arguments_options[@]}" \
+'-m+[Set the change message]:MESSAGE: ' \
+'--message=[Set the change message]:MESSAGE: ' \
+'--description=[Set the description field]:DESCRIPTION: ' \
+'--author=[Set the author field]:AUTHOR: ' \
+'--channel=[Record the change in this channel instead of the current channel]:CHANNEL: ' \
+'--repository=[Set the repository where this command should run. Defaults to the first ancestor of the current directory that contains a `.pijul` directory]:REPO_PATH: ' \
+'*--timestamp=[Set the timestamp field]:TIMESTAMP: ' \
+'--working-copy=[]:WORKING_COPY: ' \
+'--amend=[Amend this change instead of creating a new change]:AMEND: ' \
+'--identity=[Identity to sign changes with]:IDENTITY: ' \
+'-a[Record all paths that have changed]' \
+'--all[Record all paths that have changed]' \
+'--ignore-missing[Ignore missing (deleted) files]' \
+'--patience[Use Patience diff instead of the default Myers diff]' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+'*::prefixes -- Paths in which to record the changes:' \
+&& ret=0
+;;
+(diff)
+_arguments "${_arguments_options[@]}" \
+'--repository=[Set the repository where this command should run. Defaults to the first ancestor of the current directory that contains a `.pijul` directory]:REPO_PATH: ' \
+'--channel=[Compare with this channel]:CHANNEL: ' \
+'--json[Output the diff in JSON format instead of the default change text format]' \
+'--tag[Add all the changes of this channel as dependencies (except changes implied transitively), instead of the minimal dependencies]' \
+'-s[Show a short version of the diff]' \
+'--short[Show a short version of the diff]' \
+'-u[Include the untracked files]' \
+'--untracked[Include the untracked files]' \
+'--patience[Use Patience diff instead of the default Myers diff]' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+'*::prefixes -- Only diff those paths (files or directories). If missing, diff the entire repository:' \
+&& ret=0
+;;
+(log)
+_arguments "${_arguments_options[@]}" \
+'--repository=[Set the repository where this command should run. Defaults to the first ancestor of the current directory that contains a `.pijul` directory]:REPO_PATH: ' \
+'--channel=[Show logs for this channel instead of the current channel]:CHANNEL: ' \
+'--offset=[Start after this many changes]:OFFSET: ' \
+'--limit=[Output at most this many changes]:LIMIT: ' \
+'--output-format=[]:OUTPUT_FORMAT:(plaintext json)' \
+'--hash-only[Only show the change hashes]' \
+'--state[Include state identifiers in the output]' \
+'--description[Include full change description in the output]' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+'*::filters -- Filter log output, showing only log entries that touched the specified files. Accepted as a list of paths relative to your current directory. Currently, filters can only be applied when logging the channel that'\''s in use:' \
+&& ret=0
+;;
+(push)
+_arguments "${_arguments_options[@]}" \
+'--repository=[Path to the repository. Uses the current repository if the argument is omitted]:REPO_PATH: ' \
+'--from-channel=[Push from this channel instead of the default channel]:FROM_CHANNEL: ' \
+'*--path=[Push changes only relating to these paths]:PATH: ' \
+'--to-channel=[Push to this remote channel instead of the remote'\''s default channel]:TO_CHANNEL: ' \
+'()-a[Push all changes]' \
+'()--all[Push all changes]' \
+'-f[Force an update of the local remote cache. May effect some reporting of unrecords/concurrent changes in the remote]' \
+'--force-cache[Force an update of the local remote cache. May effect some reporting of unrecords/concurrent changes in the remote]' \
+'-k[Do not check certificates (HTTPS remotes only, this option might be dangerous)]' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+'::to -- Push to this remote:' \
+'*::changes -- Push only these changes:' \
+&& ret=0
+;;
+(pull)
+_arguments "${_arguments_options[@]}" \
+'--repository=[Set the repository where this command should run. Defaults to the first ancestor of the current directory that contains a `.pijul` directory]:REPO_PATH: ' \
+'--to-channel=[Pull into this channel instead of the current channel]:TO_CHANNEL: ' \
+'*--path=[Only pull to these paths]:PATH: ' \
+'--from-channel=[Pull from this remote channel]:FROM_CHANNEL: ' \
+'()-a[Pull all changes]' \
+'()--all[Pull all changes]' \
+'-f[Force an update of the local remote cache. May effect some reporting of unrecords/concurrent changes in the remote]' \
+'--force-cache[Force an update of the local remote cache. May effect some reporting of unrecords/concurrent changes in the remote]' \
+'-k[Do not check certificates (HTTPS remotes only, this option might be dangerous)]' \
+'--full[Download full changes, even when not necessary]' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+'::from -- Pull from this remote:' \
+'*::changes -- Pull changes from the local repository, not necessarily from a channel:' \
+&& ret=0
+;;
+(change)
+_arguments "${_arguments_options[@]}" \
+'--repository=[Use the repository at PATH instead of the current directory]:PATH: ' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+'::hash -- The hash of the change to show, or an unambiguous prefix thereof:' \
+&& ret=0
+;;
+(dependents)
+_arguments "${_arguments_options[@]}" \
+'--repository=[Use the repository at PATH instead of the current directory]:PATH: ' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+'::hash -- The hash of the change to show, or an unambiguous prefix thereof:' \
+&& ret=0
+;;
+(channel)
+_arguments "${_arguments_options[@]}" \
+'--repository=[Set the repository where this command should run. Defaults to the first ancestor of the current directory that contains a `.pijul` directory]:REPO_PATH: ' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+":: :_pijul__channel_commands" \
+"*::: :->channel" \
+&& ret=0
+
+    case $state in
+    (channel)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:pijul-channel-command-$line[1]:"
+        case $line[1] in
+            (delete)
+_arguments "${_arguments_options[@]}" \
+'-h[Print help information]' \
+'--help[Print help information]' \
+':delete:' \
+&& ret=0
+;;
+(rename)
+_arguments "${_arguments_options[@]}" \
+'-h[Print help information]' \
+'--help[Print help information]' \
+':from:' \
+'::to:' \
+&& ret=0
+;;
+(switch)
+_arguments "${_arguments_options[@]}" \
+'-f[]' \
+'--force[]' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+'::to:' \
+&& ret=0
+;;
+(new)
+_arguments "${_arguments_options[@]}" \
+'--empty[]' \
+'-f[]' \
+'--force[]' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+':name:' \
+&& ret=0
+;;
+(help)
+_arguments "${_arguments_options[@]}" \
+'*::subcommand -- The subcommand whose help message to display:' \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+(protocol)
+_arguments "${_arguments_options[@]}" \
+'--repository=[Set the repository where this command should run. Defaults to the first ancestor of the current directory that contains a `.pijul` directory]:REPO_PATH: ' \
+'--version=[Use this protocol version]:VERSION: ' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+&& ret=0
+;;
+(move)
+_arguments "${_arguments_options[@]}" \
+'--salt=[]:SALT: ' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+'*::paths -- Paths which need to be moved:' \
+&& ret=0
+;;
+(list)
+_arguments "${_arguments_options[@]}" \
+'--repository=[Set the repository where this command should run. Defaults to the first ancestor of the current directory that contains a `.pijul` directory]:REPO_PATH: ' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+&& ret=0
+;;
+(add)
+_arguments "${_arguments_options[@]}" \
+'--salt=[]:SALT: ' \
+'-r[]' \
+'--recursive[]' \
+'-f[]' \
+'--force[]' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+'*::paths -- Paths to add to the internal tree:' \
+&& ret=0
+;;
+(remove)
+_arguments "${_arguments_options[@]}" \
+'-h[Print help information]' \
+'--help[Print help information]' \
+'*::paths -- The paths need to be removed:' \
+&& ret=0
+;;
+(reset)
+_arguments "${_arguments_options[@]}" \
+'--repository=[Set the repository where this command should run. Defaults to the first ancestor of the current directory that contains a `.pijul` directory]:REPO_PATH: ' \
+'--channel=[Reset the working copy to this channel, and change the current channel to this channel]:CHANNEL: ' \
+'--dry-run[Print this file to the standard output, without modifying the repository (works for a single file only)]' \
+'-f[Reset even if there are unrecorded changes]' \
+'--force[Reset even if there are unrecorded changes]' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+'*::files -- Only reset these files:' \
+&& ret=0
+;;
+(debug)
+_arguments "${_arguments_options[@]}" \
+'--repository=[]:REPO_PATH: ' \
+'--channel=[]:CHANNEL: ' \
+'--sanakirja-only[]' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+'::root:' \
+&& ret=0
+;;
+(fork)
+_arguments "${_arguments_options[@]}" \
+'--repository=[Set the repository where this command should run. Defaults to the first ancestor of the current directory that contains a `.pijul` directory]:REPO_PATH: ' \
+'(--change)--channel=[Make the new channel from this channel instead of the current channel]:CHANNEL: ' \
+'(--channel)--change=[Apply this change after creating the channel]:CHANGE: ' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+':to -- The name of the new channel:' \
+&& ret=0
+;;
+(unrecord)
+_arguments "${_arguments_options[@]}" \
+'--repository=[Set the repository where this command should run. Defaults to the first ancestor of the current directory that contains a `.pijul` directory]:REPO_PATH: ' \
+'--channel=[Unrecord changes from this channel instead of the current channel]:CHANNEL: ' \
+'()--show-changes=[Show N changes in a text editor if no <change-id>s were given. Defaults to the value of `unrecord_changes` in your global configuration]:N: ' \
+'--reset[Also undo the changes in the working copy (preserving unrecorded changes if there are any)]' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+'*::change-id -- The hash of a change (unambiguous prefixes are accepted):' \
+&& ret=0
+;;
+(apply)
+_arguments "${_arguments_options[@]}" \
+'--repository=[Set the repository where this command should run. Defaults to the first ancestor of the current directory that contains a `.pijul` directory]:REPO_PATH: ' \
+'--channel=[Apply change to this channel]:CHANNEL: ' \
+'--deps-only[Only apply the dependencies of the change, not the change itself. Only applicable for a single change]' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+'*::change -- The change that need to be applied. If this value is missing, read the change in text format on the standard input:' \
+&& ret=0
+;;
+(remote)
+_arguments "${_arguments_options[@]}" \
+'--repository=[Set the repository where this command should run. Defaults to the first ancestor of the current directory that contains a `.pijul` directory]:REPO_PATH: ' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+":: :_pijul__remote_commands" \
+"*::: :->remote" \
+&& ret=0
+
+    case $state in
+    (remote)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:pijul-remote-command-$line[1]:"
+        case $line[1] in
+            (default)
+_arguments "${_arguments_options[@]}" \
+'-h[Print help information]' \
+'--help[Print help information]' \
+':remote:' \
+&& ret=0
+;;
+(delete)
+_arguments "${_arguments_options[@]}" \
+'-h[Print help information]' \
+'--help[Print help information]' \
+':remote:' \
+&& ret=0
+;;
+(help)
+_arguments "${_arguments_options[@]}" \
+'*::subcommand -- The subcommand whose help message to display:' \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+(archive)
+_arguments "${_arguments_options[@]}" \
+'--repository=[Set the repository where this command should run. Defaults to the first ancestor of the current directory that contains a `.pijul` directory]:REPO_PATH: ' \
+'--channel=[Use this channel, instead of the current channel]:CHANNEL: ' \
+'--remote=[Ask the remote to send an archive]:REMOTE: ' \
+'--state=[Archive in this state]:STATE: ' \
+'*--change=[Apply these changes after switching to the channel]:CHANGE: ' \
+'--prefix=[Append this path in front of each path inside the archive]:PREFIX: ' \
+'--umask=[Append this path in front of each path inside the archive]:UMASK: ' \
+'-o+[Name of the output file]:NAME: ' \
+'-k[Do not check certificates (HTTPS remotes only, this option might be dangerous)]' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+&& ret=0
+;;
+(credit)
+_arguments "${_arguments_options[@]}" \
+'--repository=[Set the repository where this command should run. Defaults to the first ancestor of the current directory that contains a `.pijul` directory]:REPO_PATH: ' \
+'--channel=[Use this channel instead of the current channel]:CHANNEL: ' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+':file -- The file to annotate:' \
+&& ret=0
+;;
+(tag)
+_arguments "${_arguments_options[@]}" \
+'--repository=[]:REPO_PATH: ' \
+'--channel=[]:CHANNEL: ' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+":: :_pijul__tag_commands" \
+"*::: :->tag" \
+&& ret=0
+
+    case $state in
+    (tag)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:pijul-tag-command-$line[1]:"
+        case $line[1] in
+            (create)
+_arguments "${_arguments_options[@]}" \
+'--repository=[Set the repository where this command should run. Defaults to the first ancestor of the current directory that contains a `.pijul` directory]:REPO_PATH: ' \
+'-m+[]:MESSAGE: ' \
+'--message=[]:MESSAGE: ' \
+'--author=[Set the author field]:AUTHOR: ' \
+'--channel=[Tag the current state of this channel instead of the current channel]:CHANNEL: ' \
+'*--timestamp=[]:TIMESTAMP: ' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+&& ret=0
+;;
+(checkout)
+_arguments "${_arguments_options[@]}" \
+'--repository=[Set the repository where this command should run. Defaults to the first ancestor of the current directory that contains a `.pijul` directory]:REPO_PATH: ' \
+'--to-channel=[Optional new channel name. If not given, the base32 representation of the tag hash is used]:TO_CHANNEL: ' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+':tag:' \
+&& ret=0
+;;
+(reset)
+_arguments "${_arguments_options[@]}" \
+'--repository=[Set the repository where this command should run. Defaults to the first ancestor of the current directory that contains a `.pijul` directory]:REPO_PATH: ' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+':tag:' \
+&& ret=0
+;;
+(delete)
+_arguments "${_arguments_options[@]}" \
+'--repository=[Set the repository where this command should run. Defaults to the first ancestor of the current directory that contains a `.pijul` directory]:REPO_PATH: ' \
+'--channel=[Delete the tag in this channel instead of the current channel]:CHANNEL: ' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+':tag:' \
+&& ret=0
+;;
+(help)
+_arguments "${_arguments_options[@]}" \
+'*::subcommand -- The subcommand whose help message to display:' \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+(identity)
+_arguments "${_arguments_options[@]}" \
+'-k[Do not verify certificates (use with caution)]' \
+'--no-cert-check[Do not verify certificates (use with caution)]' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+":: :_pijul__identity_commands" \
+"*::: :->identity" \
+&& ret=0
+
+    case $state in
+    (identity)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:pijul-identity-command-$line[1]:"
+        case $line[1] in
+            (new)
+_arguments "${_arguments_options[@]}" \
+'--username=[Set the username]:USERNAME: ' \
+'--remote=[Set the default remote]:REMOTE: ' \
+'--display-name=[Set the display name]:DISPLAY_NAME: ' \
+'*--email=[Set the email]:EMAIL: ' \
+'*--expiry=[Set the expiry]:EXPIRY: ' \
+'--no-link[Do not automatically link keys with the remote]' \
+'--no-prompt[Abort rather than prompt for input]' \
+'--read-password[Encrypt using a password from standard input. Requires --no-prompt]' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+'::name -- Set the new identity name:' \
+&& ret=0
+;;
+(repair)
+_arguments "${_arguments_options[@]}" \
+'--no-prompt[Abort rather than prompt for input]' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+&& ret=0
+;;
+(prove)
+_arguments "${_arguments_options[@]}" \
+'--name=[Set the name used to prove the identity]:IDENTITY_NAME: ' \
+'--no-prompt[Abort rather than prompt for input]' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+&& ret=0
+;;
+(list)
+_arguments "${_arguments_options[@]}" \
+'-h[Print help information]' \
+'--help[Print help information]' \
+&& ret=0
+;;
+(edit)
+_arguments "${_arguments_options[@]}" \
+'--username=[Set the username]:USERNAME: ' \
+'--remote=[Set the default remote]:REMOTE: ' \
+'--display-name=[Set the display name]:DISPLAY_NAME: ' \
+'*--email=[Set the email]:EMAIL: ' \
+'--new-name=[Set the identity name]:NEW_NAME: ' \
+'*--expiry=[Set the expiry]:EXPIRY: ' \
+'--no-link[Do not automatically link keys with the remote]' \
+'--no-prompt[Abort rather than prompt for input]' \
+'--read-password[Encrypt using a password from standard input. Requires --no-prompt]' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+'::old-name -- Set the name of the identity to edit:' \
+&& ret=0
+;;
+(remove)
+_arguments "${_arguments_options[@]}" \
+'--name=[Set the name of the identity to remove]:IDENTITY_NAME: ' \
+'--no-confirm[Remove the matching identity without confirmation]' \
+'-h[Print help information]' \
+'--help[Print help information]' \
+&& ret=0
+;;
+(help)
+_arguments "${_arguments_options[@]}" \
+'*::subcommand -- The subcommand whose help message to display:' \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+(completion)
+_arguments "${_arguments_options[@]}" \
+'-h[Print help information]' \
+'--help[Print help information]' \
+":: :_pijul__completion_commands" \
+"*::: :->completion" \
+&& ret=0
+
+    case $state in
+    (completion)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:pijul-completion-command-$line[1]:"
+        case $line[1] in
+            (bash)
+_arguments "${_arguments_options[@]}" \
+'-h[Print help information]' \
+'--help[Print help information]' \
+&& ret=0
+;;
+(elvish)
+_arguments "${_arguments_options[@]}" \
+'-h[Print help information]' \
+'--help[Print help information]' \
+&& ret=0
+;;
+(fish)
+_arguments "${_arguments_options[@]}" \
+'-h[Print help information]' \
+'--help[Print help information]' \
+&& ret=0
+;;
+(power-shell)
+_arguments "${_arguments_options[@]}" \
+'-h[Print help information]' \
+'--help[Print help information]' \
+&& ret=0
+;;
+(zsh)
+_arguments "${_arguments_options[@]}" \
+'-h[Print help information]' \
+'--help[Print help information]' \
+&& ret=0
+;;
+(help)
+_arguments "${_arguments_options[@]}" \
+'*::subcommand -- The subcommand whose help message to display:' \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+(help)
+_arguments "${_arguments_options[@]}" \
+'*::subcommand -- The subcommand whose help message to display:' \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+}
+
+(( $+functions[_pijul_commands] )) ||
+_pijul_commands() {
+    local commands; commands=(
+'init:Initializes an empty pijul repository' \
+'clone:Clones an existing pijul repository' \
+'record:Creates a new change' \
+'diff:Shows difference between two channels/changes' \
+'log:Show the entire log of changes' \
+'push:Pushes changes to a remote upstream' \
+'pull:Pulls changes from a remote upstream' \
+'change:Shows information about a particular change' \
+'dependents:Lists the transitive closure of the reverse dependency relation' \
+'channel:Manages different channels' \
+'protocol:This command is not meant to be run by the user, instead it is called over SSH' \
+'move:Moves a file in the working copy and the tree' \
+'list:Lists files tracked by pijul' \
+'add:Adds a path to the tree' \
+'remove:Removes a file from the tree of tracked files (`pijul record` will then record this as a deletion)' \
+'reset:Resets the working copy to the last recorded change' \
+'debug:' \
+'fork:Create a new channel' \
+'unrecord:Unrecords a list of changes' \
+'apply:Applies changes to a channel' \
+'remote:Manages remote repositories' \
+'archive:Creates an archive of the repository' \
+'credit:Shows which change last affected each line of the given file(s)' \
+'tag:Manage tags (create tags, check out a tag)' \
+'identity:A collection of tools for interactively managing the user'\''s identities. This may be useful if you use Pijul in multiple contexts, for example both work & personal projects' \
+'completion:Shell completion script generation' \
+'help:Print this message or the help of the given subcommand(s)' \
+    )
+    _describe -t commands 'pijul commands' commands "$@"
+}
+(( $+functions[_pijul__add_commands] )) ||
+_pijul__add_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul add commands' commands "$@"
+}
+(( $+functions[_pijul__apply_commands] )) ||
+_pijul__apply_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul apply commands' commands "$@"
+}
+(( $+functions[_pijul__archive_commands] )) ||
+_pijul__archive_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul archive commands' commands "$@"
+}
+(( $+functions[_pijul__completion__bash_commands] )) ||
+_pijul__completion__bash_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul completion bash commands' commands "$@"
+}
+(( $+functions[_pijul__change_commands] )) ||
+_pijul__change_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul change commands' commands "$@"
+}
+(( $+functions[_pijul__channel_commands] )) ||
+_pijul__channel_commands() {
+    local commands; commands=(
+'delete:Delete a channel. The channel must not be the current channel' \
+'rename:Rename a channel' \
+'switch:Switch to a channel. There must not be unrecorded changes in the working copy' \
+'new:Create a new, empty channel' \
+'help:Print this message or the help of the given subcommand(s)' \
+    )
+    _describe -t commands 'pijul channel commands' commands "$@"
+}
+(( $+functions[_pijul__tag__checkout_commands] )) ||
+_pijul__tag__checkout_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul tag checkout commands' commands "$@"
+}
+(( $+functions[_pijul__clone_commands] )) ||
+_pijul__clone_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul clone commands' commands "$@"
+}
+(( $+functions[_pijul__completion_commands] )) ||
+_pijul__completion_commands() {
+    local commands; commands=(
+'bash:' \
+'elvish:' \
+'fish:' \
+'power-shell:' \
+'zsh:' \
+'help:Print this message or the help of the given subcommand(s)' \
+    )
+    _describe -t commands 'pijul completion commands' commands "$@"
+}
+(( $+functions[_pijul__tag__create_commands] )) ||
+_pijul__tag__create_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul tag create commands' commands "$@"
+}
+(( $+functions[_pijul__credit_commands] )) ||
+_pijul__credit_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul credit commands' commands "$@"
+}
+(( $+functions[_pijul__debug_commands] )) ||
+_pijul__debug_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul debug commands' commands "$@"
+}
+(( $+functions[_pijul__remote__default_commands] )) ||
+_pijul__remote__default_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul remote default commands' commands "$@"
+}
+(( $+functions[_pijul__channel__delete_commands] )) ||
+_pijul__channel__delete_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul channel delete commands' commands "$@"
+}
+(( $+functions[_pijul__remote__delete_commands] )) ||
+_pijul__remote__delete_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul remote delete commands' commands "$@"
+}
+(( $+functions[_pijul__tag__delete_commands] )) ||
+_pijul__tag__delete_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul tag delete commands' commands "$@"
+}
+(( $+functions[_pijul__dependents_commands] )) ||
+_pijul__dependents_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul dependents commands' commands "$@"
+}
+(( $+functions[_pijul__diff_commands] )) ||
+_pijul__diff_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul diff commands' commands "$@"
+}
+(( $+functions[_pijul__identity__edit_commands] )) ||
+_pijul__identity__edit_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul identity edit commands' commands "$@"
+}
+(( $+functions[_pijul__completion__elvish_commands] )) ||
+_pijul__completion__elvish_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul completion elvish commands' commands "$@"
+}
+(( $+functions[_pijul__completion__fish_commands] )) ||
+_pijul__completion__fish_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul completion fish commands' commands "$@"
+}
+(( $+functions[_pijul__fork_commands] )) ||
+_pijul__fork_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul fork commands' commands "$@"
+}
+(( $+functions[_pijul__channel__help_commands] )) ||
+_pijul__channel__help_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul channel help commands' commands "$@"
+}
+(( $+functions[_pijul__completion__help_commands] )) ||
+_pijul__completion__help_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul completion help commands' commands "$@"
+}
+(( $+functions[_pijul__help_commands] )) ||
+_pijul__help_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul help commands' commands "$@"
+}
+(( $+functions[_pijul__identity__help_commands] )) ||
+_pijul__identity__help_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul identity help commands' commands "$@"
+}
+(( $+functions[_pijul__remote__help_commands] )) ||
+_pijul__remote__help_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul remote help commands' commands "$@"
+}
+(( $+functions[_pijul__tag__help_commands] )) ||
+_pijul__tag__help_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul tag help commands' commands "$@"
+}
+(( $+functions[_pijul__identity_commands] )) ||
+_pijul__identity_commands() {
+    local commands; commands=(
+'new:Create a new identity' \
+'repair:Repair the identity state on disk, including migration from older versions of Pijul' \
+'prove:Prove an identity to the server' \
+'list:Pretty-print all valid identities on disk' \
+'edit:Edit an existing identity' \
+'remove:Remove an existing identity' \
+'help:Print this message or the help of the given subcommand(s)' \
+    )
+    _describe -t commands 'pijul identity commands' commands "$@"
+}
+(( $+functions[_pijul__init_commands] )) ||
+_pijul__init_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul init commands' commands "$@"
+}
+(( $+functions[_pijul__identity__list_commands] )) ||
+_pijul__identity__list_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul identity list commands' commands "$@"
+}
+(( $+functions[_pijul__list_commands] )) ||
+_pijul__list_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul list commands' commands "$@"
+}
+(( $+functions[_pijul__log_commands] )) ||
+_pijul__log_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul log commands' commands "$@"
+}
+(( $+functions[_pijul__move_commands] )) ||
+_pijul__move_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul move commands' commands "$@"
+}
+(( $+functions[_pijul__channel__new_commands] )) ||
+_pijul__channel__new_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul channel new commands' commands "$@"
+}
+(( $+functions[_pijul__identity__new_commands] )) ||
+_pijul__identity__new_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul identity new commands' commands "$@"
+}
+(( $+functions[_pijul__completion__power-shell_commands] )) ||
+_pijul__completion__power-shell_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul completion power-shell commands' commands "$@"
+}
+(( $+functions[_pijul__protocol_commands] )) ||
+_pijul__protocol_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul protocol commands' commands "$@"
+}
+(( $+functions[_pijul__identity__prove_commands] )) ||
+_pijul__identity__prove_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul identity prove commands' commands "$@"
+}
+(( $+functions[_pijul__pull_commands] )) ||
+_pijul__pull_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul pull commands' commands "$@"
+}
+(( $+functions[_pijul__push_commands] )) ||
+_pijul__push_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul push commands' commands "$@"
+}
+(( $+functions[_pijul__record_commands] )) ||
+_pijul__record_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul record commands' commands "$@"
+}
+(( $+functions[_pijul__remote_commands] )) ||
+_pijul__remote_commands() {
+    local commands; commands=(
+'default:Set the default remote' \
+'delete:Deletes the remote' \
+'help:Print this message or the help of the given subcommand(s)' \
+    )
+    _describe -t commands 'pijul remote commands' commands "$@"
+}
+(( $+functions[_pijul__identity__remove_commands] )) ||
+_pijul__identity__remove_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul identity remove commands' commands "$@"
+}
+(( $+functions[_pijul__remove_commands] )) ||
+_pijul__remove_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul remove commands' commands "$@"
+}
+(( $+functions[_pijul__channel__rename_commands] )) ||
+_pijul__channel__rename_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul channel rename commands' commands "$@"
+}
+(( $+functions[_pijul__identity__repair_commands] )) ||
+_pijul__identity__repair_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul identity repair commands' commands "$@"
+}
+(( $+functions[_pijul__reset_commands] )) ||
+_pijul__reset_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul reset commands' commands "$@"
+}
+(( $+functions[_pijul__tag__reset_commands] )) ||
+_pijul__tag__reset_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul tag reset commands' commands "$@"
+}
+(( $+functions[_pijul__channel__switch_commands] )) ||
+_pijul__channel__switch_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul channel switch commands' commands "$@"
+}
+(( $+functions[_pijul__tag_commands] )) ||
+_pijul__tag_commands() {
+    local commands; commands=(
+'create:Create a tag, which are compressed channels. Note that tags are not independent from the changes they contain' \
+'checkout:Restore a tag into a new channel' \
+'reset:Reset the working copy to a tag' \
+'delete:Delete a tag from a channel. If the same state isn'\''t tagged in other channels, delete the tag file' \
+'help:Print this message or the help of the given subcommand(s)' \
+    )
+    _describe -t commands 'pijul tag commands' commands "$@"
+}
+(( $+functions[_pijul__unrecord_commands] )) ||
+_pijul__unrecord_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul unrecord commands' commands "$@"
+}
+(( $+functions[_pijul__completion__zsh_commands] )) ||
+_pijul__completion__zsh_commands() {
+    local commands; commands=()
+    _describe -t commands 'pijul completion zsh commands' commands "$@"
+}
+
+_pijul "$@"
