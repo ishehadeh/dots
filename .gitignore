@@ -1,1 +1,4 @@
 /.vscode/
+
+# pijul secrets
+/pijul/.config/pijul/identities
