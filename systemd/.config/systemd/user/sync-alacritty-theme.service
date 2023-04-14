@@ -6,5 +6,5 @@ Description=Keep alacritty theme in sync with gnome
 ExecStart=/bin/sh -c "~/.local/bin/sync-alacritty-theme"
 
 [Install]
-WantedBy=graphical.target
+WantedBy=default.target
 
