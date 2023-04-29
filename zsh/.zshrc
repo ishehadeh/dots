@@ -165,3 +165,8 @@ alias load-sdk="export SDKMAN_DIR=\"\$HOME/.sdkman\"; source \"\$SDKMAN_DIR/bin/
 
 # opam configuration
 [[ ! -r /home/ian/.opam/opam-init/init.zsh ]] || source /home/ian/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
+
+if [ -d "$HOME/.local/plan9" ]; then
+    export PLAN9="$HOME/.local/plan9"
+    export PATH="$PATH:$PLAN9/bin"
+fi
