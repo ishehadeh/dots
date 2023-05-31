@@ -157,11 +157,17 @@ dotenv() {
 
 command-exists() { (( $+commands[$1] )); }
 
-
-
 alias load-sdk="export SDKMAN_DIR=\"\$HOME/.sdkman\"; source \"\$SDKMAN_DIR/bin/sdkman-init.sh\""
 
-# zprof
+# atuin is an alternative application for handling shell history
+# https://github.com/ellie/atuin#install
+if command -v 'atuin' >/dev/null; then
+    if ! [ -f ~/.config/zsh/atuin.zsh ]; then
+        atuin init zsh --disable-up-arrow >~/.config/zsh/atuin.zsh
+    fi
+
+    source ~/.config/zsh/atuin.zsh
+fi
 
 # opam configuration
 [[ ! -r /home/ian/.opam/opam-init/init.zsh ]] || source /home/ian/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
