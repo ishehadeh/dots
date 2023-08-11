@@ -155,7 +155,7 @@ dotenv() {
     bc -l <<<"$@"
 }
 
-command-exists() { (( $+commands[$1] )); }
+command_exists() { (( $+commands[$1] )); }
 
 alias load-sdk="export SDKMAN_DIR=\"\$HOME/.sdkman\"; source \"\$SDKMAN_DIR/bin/sdkman-init.sh\""
 
@@ -167,6 +167,12 @@ if command -v 'atuin' >/dev/null; then
     fi
 
     source ~/.config/zsh/atuin.zsh
+fi
+
+if command_exists deno; then
+    # deno is JS runtime, if its installed export its bin directory.
+    # The bin directory is applications installed through deno are kept.
+    export PATH="$PATH:${DENO_INSTALL_ROOT:-$HOME/.deno}/bin"
 fi
 
 # opam configuration
