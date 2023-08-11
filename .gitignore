@@ -2,3 +2,6 @@
 
 # pijul secrets
 /pijul/.config/pijul/identities
+
+# Systemd user enabled services
+/systemd/.config/systemd/user/*.target.wants/*
