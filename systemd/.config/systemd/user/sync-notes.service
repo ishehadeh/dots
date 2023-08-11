@@ -1,0 +1,10 @@
+[Unit]
+Description=Sync markdown notes to documents
+Wants=sync-notes.timer
+
+[Service]
+Type=oneshot
+ExecStart=sh -c 'rsync -avr "silverbullet@proxy.shehadeh.net:/home/silverbullet/notes" "$HOME/Documents/notes"'
+
+[Install]
+WantedBy=multi-user.target
