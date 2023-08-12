@@ -15,13 +15,49 @@ block_width() {
     echo "$max_size"
 }
 
-banner() {
-    text=`figlet -f smslant "Welcome   Back   $(whoami)"`
-    width=`simplify "round(min($(block_width "$text") * 1.3, $(tput cols)))"`
+package_update_count_dnf() {
+    dnf check-update -y --cacheonly | awk '$3 == "updates" { print $1 "\t" $2}' | wc -l
+}
 
-    echo `rep '#' $width`
+package_count_dnf() {
+    rpm -qa | wc -l
+}
+
+package_update_count_pacman() {
+    pacman -Qqu | wc -l
+}
+
+package_count_pacman() {
+    pacman -Qq | wc -l
+}
+
+print_package_update_status() {
+    if command -v pacman >/dev/null; then
+        echo -n "$(package_update_count_pacman)/$(package_count_pacman)"
+    elif command -v dnf >/dev/null; then
+        echo -n "$(package_update_count_dnf)/$(package_count_dnf)"
+    else
+        echo -n "Unsupported package manager, expected pacman or DNF"
+    fi
+}
+
+banner() {
+    max_banner_width="$(tput cols)"
+    if command -v figlet >/dev/null; then
+        text=`figlet -w "$max_banner_width" -f smslant "Welcome   Back   $(whoami)"`
+    else
+        text="Welcome  Back  $(whoami)"
+    fi
+
+    text_width="$(block_width "$text")"
+    banner_width="$((text_width * 13 / 10))"
+    if [ "$max_banner_width" -lt "$banner_width" ]; then
+        banner_width="$max_banner_width"
+    fi
+
+    echo `rep '#' $banner_width`
     echo -e "\033[1;36m$text\033[0m"
-    echo `rep '#' $width`
+    echo `rep '#' $banner_width`
 }
 
 info_message() {
@@ -33,21 +69,21 @@ partition_percent_used() {
 }
 
 highlight_partition_percent() {
-    if [[ $1 -gt 90 ]]; then
-		effect f="red" 
-    elif [[ $1 -gt 70 ]]; then
-		effect f="yellow"
-    fi
+    # if [[ $1 -gt 90 ]]; then
+	# 	effect f="red" 
+    # elif [[ $1 -gt 70 ]]; then
+	# 	effect f="yellow"
+    # fi
 	printf "%d%%" "$1"
-	effect !f
-	echo
+	# effect !f
+	# echo
 }
 
 info() {
     mounts=$(cat /etc/fstab | awk '$1 ~ /UUID=[0-9\-a-fA-F]+/ && $2 ~ /(\/.*)+/ {print $2 }')
     
 	info_message 'host' "   `whoami`@`hostname`"
-    info_message 'updates' "`pacman -Qqu | wc -l`/`pacman -Qq | wc -l`"
+    info_message 'updates' $(print_package_update_status)
     info_message 'partitions:'
     for m in $mounts; do
 		info_message "    $m `partition_percent_used $m`"	
