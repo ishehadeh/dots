@@ -172,7 +172,7 @@ alias load-sdk="export SDKMAN_DIR=\"\$HOME/.sdkman\"; source \"\$SDKMAN_DIR/bin/
 
 # atuin is an alternative application for handling shell history
 # https://github.com/ellie/atuin#install
-if command -v 'atuin' >/dev/null; then
+if command_exists atuin; then
     if ! [ -f ~/.config/zsh/atuin.zsh ]; then
         atuin init zsh --disable-up-arrow >~/.config/zsh/atuin.zsh
     fi
