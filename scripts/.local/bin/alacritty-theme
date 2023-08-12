@@ -1,0 +1,72 @@
+#!/bin/sh
+
+set -ue -o pipefail
+
+if [ "${ALACRITTY_CONFIG_DIR:-\0}" = "\0" ]; then
+    if [ "${XDG_CONFIG_HOME-\0}" = "\0" ]; then
+        ALACRITTY_CONFIG_DIR="$HOME/.config/alacritty"
+    else
+        ALACRITTY_CONFIG_DIR="$XDG_CONFIG_HOME/alacritty"
+    fi
+fi
+
+if [ "${ALACRITTY_THEME_DIR:-\0}" = "\0" ]; then
+    ALACRITTY_THEME_DIR="$ALACRITTY_CONFIG_DIR/themes/"
+fi
+
+if [ "${ALACRITTY_THEME_FILE:-\0}" = "\0" ]; then
+    ALACRITTY_THEME_FILE="$ALACRITTY_CONFIG_DIR/theme.yml"
+fi
+
+# canonicalize all config paths (except ALACRITTY_THEME_FILE, since thats supposed to be a symlink)
+ALACRITTY_CONFIG_DIR="$(readlink -f "$ALACRITTY_CONFIG_DIR")"
+ALACRITTY_THEME_DIR="$(readlink -f "$ALACRITTY_THEME_DIR")"
+
+# assert the theme file is a symlink to the theme dir
+if ! [ -L "$ALACRITTY_THEME_FILE" ]; then
+    echo "\$ALACRITTY_THEME_FILE is not a symlink! This script may overwrite that file."
+    echo "    \$ALACRITTY_THEME_FILE=$ALACRITTY_THEME_FILE"
+    exit 1
+fi
+
+if ! [ "$(dirname $(readlink -f "$ALACRITTY_THEME_FILE"))" = "$ALACRITTY_THEME_DIR" ]; then
+    echo "\$ALACRITTY_THEME_FILE is not a symlink to a file in \$ALACRITTY_THEME_DIR! This script may overwrite that file, please remove it if the theme directory has moved."
+    echo "    \$ALACRITTY_THEME_DIR=$ALACRITTY_THEME_DIR"
+    echo "    \$ALACRITTY_THEME_FILE=$ALACRITTY_THEME_FILE"
+    echo "    \$ALACRITTY_THEME_FILE theme directory: $(dirname $(readlink $ALACRITTY_THEME_FILE))"
+    exit 1
+fi
+
+alacritty_theme_get() {
+    readlink "$ALACRITTY_THEME_FILE" | xargs basename -s .yml
+}
+
+alacritty_theme_list() {
+    ls -1 "$ALACRITTY_THEME_DIR" | xargs basename -s .yml
+}
+
+alacritty_theme_set() {
+    if ! [ -f "$ALACRITTY_THEME_DIR/$1.yml" ]; then
+        echo "no such theme $1, expected one of the following:"
+        for t in $(alacritty_theme_list); do
+            echo "  - $t"
+        done
+
+        return 1
+    fi
+
+    ln -s --force "$ALACRITTY_THEME_DIR/$1.yml" "$ALACRITTY_THEME_FILE"
+    touch "$ALACRITTY_CONFIG_DIR/alacritty.yml"
+}
+
+case "${1:-help}" in
+    get) alacritty_theme_get;;
+    list) alacritty_theme_list;;
+    set) alacritty_theme_set "$2";;
+    help)
+        echo "$0 [get|set|list] [ARGS...]"
+        exit 0;;
+    *)
+        echo "unknown command"
+        exit 1;;
+esac
