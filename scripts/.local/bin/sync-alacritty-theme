@@ -15,7 +15,7 @@ while read line; do
             \'default\')
                 alacritty-theme set gruvbox.light;;
             *)
-                set_themes set gruvbox.dark
+                alacritty-theme set gruvbox.dark
                 echo "unknown theme '$dconf_theme', defaulting to dark";;
         esac
     fi
