@@ -4,11 +4,15 @@ set -ue -o pipefail
 
 DCONF_KEY='/org/gnome/desktop/interface/color-scheme'
 
+# make sure alacritty-theme can be found
+export PATH="$HOME/.local/bin:$PATH"
+
 next_line_is_value=0
 dconf watch "$DCONF_KEY" | \
 while read line; do
     if [ $next_line_is_value -eq 1 ]; then
         dconf_theme=$(echo $line) # get rid of extra '' for strings
+        echo "$DCONF_KEY = $dconf_theme"
         case $dconf_theme in 
             \'prefer-dark\')
                 alacritty-theme set gruvbox.dark;;
