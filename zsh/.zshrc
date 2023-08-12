@@ -62,8 +62,21 @@ export LANG="en_US.UTF-8"
 export LC_CTYPE="$LANG"
 
 ## Applications
-export VISUAL="micro"
-export EDITOR="$VISUAL"
+command_exists() { (( $+commands[$1] )); }
+
+_editor_preference_list="micro nvim vim nano vi"
+for editor in $_editor_preference_list; do
+    if command_exists "$editor"; then
+        export VISUAL="$editor"
+        break
+    fi
+done
+if ! [[ -v VISUAL ]]; then
+    echo "WARNING: could not find an editor, leaving \$EDITOR and \$VISUAL unset"
+else
+    export EDITOR="$VISUAL"
+fi
+
 export PAGER="less"
 export TERM="alacritty"
 
@@ -154,8 +167,6 @@ dotenv() {
 '='() {
     bc -l <<<"$@"
 }
-
-command_exists() { (( $+commands[$1] )); }
 
 alias load-sdk="export SDKMAN_DIR=\"\$HOME/.sdkman\"; source \"\$SDKMAN_DIR/bin/sdkman-init.sh\""
 
