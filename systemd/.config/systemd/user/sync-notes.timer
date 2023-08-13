@@ -1,5 +1,5 @@
 [Unit]
-Description=Sync markdown notes daily
+Description=Sync Markdown Notes (Daily)
 
 [Timer]
 OnCalendar=daily

@@ -1,5 +1,5 @@
 [Unit]
-Description=Sync markdown notes to documents
+Description=Sync Markdown Notes
 Wants=sync-notes.timer
 
 [Service]
