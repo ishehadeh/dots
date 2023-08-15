@@ -64,8 +64,7 @@ export LC_CTYPE="$LANG"
 ## Applications
 command_exists() { (( $+commands[$1] )); }
 
-_editor_preference_list="micro nvim vim nano vi"
-for editor in $_editor_preference_list; do
+for editor in micro nvim vim nano vi; do
     if command_exists "$editor"; then
         export VISUAL="$editor"
         break
