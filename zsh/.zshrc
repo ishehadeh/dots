@@ -63,7 +63,6 @@ export LC_CTYPE="$LANG"
 
 ## Applications
 command_exists() { (( $+commands[$1] )); }
-
 for editor in micro nvim vim nano vi; do
     if command_exists "$editor"; then
         export VISUAL="$editor"
@@ -93,15 +92,12 @@ export LEDGER_FILE="$HOME/.ledger/main.journal"
 export GUILE_LOAD_COMPILED_PATH="$GUILE_LOAD_COMPILED_PATH:/usr/lib64/guile/3.0/site-ccache"
 export GUILE_LOAD_PATH="$GUILE_LOAD_PATH:/usr/share/guile/site/3.0"
 
-get_npm_prefix() {
-    sed -rn 's/^[[:blank:]]*prefix[[:blank:]]*=[[:blank:]]*(.+)$/\1/p' ~/.npmrc
-}
+alias trim="sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'"
 
 if [ -f ~/.npmrc ]; then
     # npm config get prefix is really slow, so just get it the hacky way with grep
-    npm_prefix=$(grep '^[[:blank:]]*prefix[[:blank:]]*=[[:blank:]]*.*$' ~/.npmrc | cut -f2 -d=)
-
-    if [ -n "$npm_prefix" ]; then
+    npm_prefix="$(awk -F= '$1 = "pefix" { print $2 }' ~/.npmrc | trim)"
+    if [[ -n "$npm_prefix" ]]; then
         export PATH="$PATH:$npm_prefix/bin"
 
         # Preserve MANPATH if you already defined it somewhere in your config.
