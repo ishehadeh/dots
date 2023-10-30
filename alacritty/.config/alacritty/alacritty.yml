@@ -4,8 +4,10 @@ import:
 # Any items in the `env` entry below will be added as
 # environment variables. Some entries may override variables
 # set by alacritty itself.
-# env:
-# TERM variable
+env:
+  # https://github.com/alacritty/alacritty/issues/1501
+  # Fixes huge, blurry text on thinkpad running plasma
+  WINIT_X11_SCALE_FACTOR: "1.0"
 #
 # This value is used to set the `$TERM` environment variable for
 # each instance of Alacritty. If it is not present, alacritty will
