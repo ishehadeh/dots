@@ -1,0 +1,28 @@
+{
+    "abbrev": "",
+    "description": [
+        ""
+    ],
+    "formatVersion": 1,
+    "menu": "",
+    "name": "Highlight Vocab",
+    "shortcut": "Ctrl+M, Ctrl+A",
+    "tag": [
+        "%SCRIPT",
+        "var text=cursor.selectedText()",
+        "",
+        "if(text.length>0)",
+        "{",
+        "    //cut selected text",
+        "    cursor.removeSelectedText()",
+        "    editor.write(\"\\\\vocab{\");",
+        "    editor.write(text);",
+        "    editor.write(\"}\");",
+        "} else {",
+        "\teditor.write(\"\\\\vocab{}\");",
+        "\tcursor.movePosition(-1);",
+        "}",
+        ""
+    ],
+    "trigger": ""
+}
