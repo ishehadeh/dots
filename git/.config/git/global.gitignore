@@ -3,3 +3,6 @@
 .stfolder/
 .stversions/
 .stignore
+
+# Local Editor Configurations
+.vscode/
