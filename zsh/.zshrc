@@ -109,9 +109,6 @@ fi
 # Aliases
 # ------------------
 
-alias copy="xclip -selection clipboard -in"
-alias paste="xclip -selection clipboard -out"
-
 # Always use a common terminal when ssh'ing
 alias ssh="TERM=xterm ssh"
 
