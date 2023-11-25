@@ -16,7 +16,7 @@ fzf_proc_picker() {
     ps -A --format pid=,cmd= | fzf | awk '{ print $1 }'
 }
 
-core_file="${PROC_FIND_STR_COREDUMP_PATH:-make_tempfile}"
+core_file="${PROC_FIND_STR_COREDUMP_PATH:-$(make_tempfile)}"
 
 sudo gdb --nx --nh --batch-silent --eval-command 'gcore '"$core_file" --pid "$(fzf_proc_picker)"
 strings "$core_file" | fzf
