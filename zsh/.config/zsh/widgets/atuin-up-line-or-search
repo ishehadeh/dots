@@ -1,0 +1,16 @@
+#!/bin/zsh
+
+atuin-up-line-or-search() {
+    if [ "$_atuin_hist_pos" -eq 0 ]; then
+        _atuin_search="$LBUFFER"
+    fi
+    _atuin_hist_pos=$((_atuin_hist_pos + 1))
+    buflen="${#LBUFFER}"
+    result="$(atuin search --limit 1 --offset $((_atuin_hist_pos - 1)) --search-mode=prefix --cmd-only --reverse "$_atuin_search")"
+    if [ "${#RBUFFER}" -ne 0 ]; then
+        LBUFFER="${result[0, $buflen]}"
+        RBUFFER="${result[$buflen, -1]}"
+    else
+        LBUFFER="$result"
+    fi
+}

@@ -27,6 +27,13 @@ fpath=(~/.config/zsh/prompts $fpath)
 autoload -U promptinit
 promptinit
 
+# Load Widgets
+fpath=(~/.config/zsh/widgets $fpath)
+for widget in $(ls ~/.config/zsh/widgets); do
+    autoload -U "$widget"
+    zle -N "$widget"
+done
+
 # ZLE
 # ----------------
 
@@ -38,8 +45,8 @@ bindkey ';5C' forward-word
 bindkey ';5D' backward-word
 
 # Search history on up/down
-bindkey '^[[A' up-line-or-search
-bindkey '^[[B' down-line-or-search
+bindkey '^[[A' atuin-up-line-or-search
+bindkey '^[[B' atuin-down-line
 
 prompt simple
 
@@ -85,6 +92,8 @@ export LESS="--mouse --quiet --RAW-CONTROL-CHARS"
 
 ## User-local Paths
 export PATH="$HOME/.local/bin:$PATH" # prioritize ~/.local/bin over system paths
+
+command_exists cargo && test -d ~/.cargo/bin && export PATH="$HOME/.cargo/bin:$PATH"
 
 ## Set hledger journal
 export LEDGER_FILE="$HOME/.ledger/main.journal"
