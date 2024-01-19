@@ -1,0 +1,67 @@
+import = ["/home/ian/.config/alacritty/theme.yml"]
+live_config_reload = true
+
+[colors]
+draw_bold_text_with_bright_colors = false
+
+[cursor]
+blink_interval = 600
+thickness = 0.17
+unfocused_hollow = true
+
+[cursor.style]
+blinking = "On"
+shape = "Beam"
+
+[env]
+WINIT_X11_SCALE_FACTOR = "1.0"
+
+[font]
+builtin_box_drawing = true
+size = 11
+
+[font.bold]
+style = "Bold"
+
+[font.bold_italic]
+style = "Bold Italic"
+
+[font.glyph_offset]
+x = 0
+y = 0
+
+[font.italic]
+style = "Italic"
+
+[font.normal]
+family = "Iosevka Term"
+style = "Regular"
+
+[font.offset]
+x = 0
+y = 0
+
+[hints]
+alphabet = "jfkdls;ahgurieowpq"
+
+[[hints.enabled]]
+command = "xdg-open"
+post_processing = true
+regex = "(ipfs:|ipns:|magnet:|mailto:|gemini:|gopher:|https:|http:|news:|file:|git:|ssh:|ftp:)[^\u0000-\u001F\u007F-<>\"\\s{-}\\^⟨⟩`]+"
+binding = { key = "U", mods = "Control|Shift" }
+mouse = { enabled = true, mods = "None" }
+
+[[hints.enabled]]
+command = { program = "/home/ian/.local/bin/prompt-run-helper", args=["> "] }
+post_processing = false
+regex = "> .+"
+binding = { key = "K", mods = "Control" }
+mouse = { enabled = true, mods = "None" }
+
+
+[scrolling]
+history = 0
+
+[shell]
+args = ["new-session", "-A", "-s", "main"]
+program = "/bin/tmux"
