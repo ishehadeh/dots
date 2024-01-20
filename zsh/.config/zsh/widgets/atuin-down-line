@@ -4,7 +4,7 @@ atuin-down-line() {
     _atuin_old_buffer="$LBUFFER"
     _atuin_hist_pos=$((_atuin_hist_pos - 1))
     if [ $((_atuin_hist_pos)) -gt 0 ]; then
-        LBUFFER="$(atuin search --limit 1 --offset $((_atuin_hist_pos)) --search-mode=prefix --cmd-only --reverse "$_atuin_search")"    
+        LBUFFER="$(atuin search --limit 1 --offset $((_atuin_hist_pos - 1)) --search-mode=prefix --cmd-only "$_atuin_search")"    
     else
         _atuin_hist_pos=0
         _atuin_search=""

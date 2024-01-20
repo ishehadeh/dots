@@ -6,7 +6,7 @@ atuin-up-line-or-search() {
     fi
     _atuin_hist_pos=$((_atuin_hist_pos + 1))
     buflen="${#LBUFFER}"
-    result="$(atuin search --limit 1 --offset $((_atuin_hist_pos - 1)) --search-mode=prefix --cmd-only --reverse "$_atuin_search")"
+    result="$(atuin search --limit 1 --offset $((_atuin_hist_pos - 1)) --search-mode=prefix --cmd-only  "$_atuin_search")"
     if [ "${#RBUFFER}" -ne 0 ]; then
         LBUFFER="${result[0, $buflen]}"
         RBUFFER="${result[$buflen, -1]}"
