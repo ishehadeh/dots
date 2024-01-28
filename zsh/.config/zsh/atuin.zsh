@@ -9,45 +9,74 @@
 # Source this in your ~/.zshrc
 autoload -U add-zsh-hook
 
+zmodload zsh/datetime 2>/dev/null
+
+# If zsh-autosuggestions is installed, configure it to use Atuin's search. If
+# you'd like to override this, then add your config after the $(atuin init zsh)
+# in your .zshrc
+_zsh_autosuggest_strategy_atuin() {
+    suggestion=$(atuin search --cmd-only --limit 1 --search-mode prefix "$1")
+}
+
+if [ -n "${ZSH_AUTOSUGGEST_STRATEGY:-}" ]; then
+    ZSH_AUTOSUGGEST_STRATEGY=("atuin" "${ZSH_AUTOSUGGEST_STRATEGY[@]}")
+else
+    ZSH_AUTOSUGGEST_STRATEGY=("atuin")
+fi
+
 export ATUIN_SESSION=$(atuin uuid)
-export ATUIN_HISTORY="atuin history list"
 
 _atuin_preexec() {
     local id
     id=$(atuin history start -- "$1")
     export ATUIN_HISTORY_ID="$id"
+    __atuin_preexec_time=${EPOCHREALTIME-}
 }
 
 _atuin_precmd() {
-    local EXIT="$?"
+    local EXIT="$?" __atuin_precmd_time=${EPOCHREALTIME-}
 
-    [[ -z "${ATUIN_HISTORY_ID}" ]] && return
+    [[ -z "${ATUIN_HISTORY_ID:-}" ]] && return
 
-    (RUST_LOG=error atuin history end --exit $EXIT -- $ATUIN_HISTORY_ID &) >/dev/null 2>&1
+    local duration=""
+    if [[ -n $__atuin_preexec_time && -n $__atuin_precmd_time ]]; then
+        printf -v duration %.0f $(((__atuin_precmd_time - __atuin_preexec_time) * 1000000000))
+    fi
+
+    (ATUIN_LOG=error atuin history end --exit $EXIT ${=duration:+--duration $duration} -- $ATUIN_HISTORY_ID &) >/dev/null 2>&1
+    export ATUIN_HISTORY_ID=""
 }
 
 _atuin_search() {
     emulate -L zsh
     zle -I
 
-    # Switch to cursor mode, then back to application
-    echoti rmkx
     # swap stderr and stdout, so that the tui stuff works
     # TODO: not this
     # shellcheck disable=SC2048
-    output=$(RUST_LOG=error atuin search $* -i -- $BUFFER 3>&1 1>&2 2>&3)
-    echoti smkx
+    output=$(ATUIN_SHELL_ZSH=t ATUIN_LOG=error atuin search $* -i -- $BUFFER 3>&1 1>&2 2>&3)
+
+    zle reset-prompt
 
     if [[ -n $output ]]; then
         RBUFFER=""
         LBUFFER=$output
-    fi
 
-    zle reset-prompt
+        if [[ $LBUFFER == __atuin_accept__:* ]]
+        then
+            LBUFFER=${LBUFFER#__atuin_accept__:}
+            zle accept-line
+        fi
+    fi
 }
 
 _atuin_up_search() {
-    _atuin_search --shell-up-key-binding
+    # Only trigger if the buffer is a single line
+    if [[ ! $BUFFER == *$'\n'* ]]; then
+        _atuin_search --shell-up-key-binding
+    else
+        zle up-line
+    fi
 }
 
 add-zsh-hook preexec _atuin_preexec
@@ -56,4 +85,6 @@ add-zsh-hook precmd _atuin_precmd
 zle -N _atuin_search_widget _atuin_search
 zle -N _atuin_up_search_widget _atuin_up_search
 
-bindkey '^r' _atuin_search_widget
+bindkey -M emacs '^r' _atuin_search_widget
+bindkey -M vicmd '^r' _atuin_search_widget
+bindkey -M viins '^r' _atuin_search_widget

@@ -5,3 +5,5 @@
 
 # Local Editor Configurations
 .vscode/
+*.code-profile
+*.code-workspace

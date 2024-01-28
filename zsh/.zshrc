@@ -176,14 +176,30 @@ dotenv() {
 
 alias load-sdk="export SDKMAN_DIR=\"\$HOME/.sdkman\"; source \"\$SDKMAN_DIR/bin/sdkman-init.sh\""
 
+zsh-needs-refresh() {
+    if [ ! -f ~/.config/zsh/atuin.zsh ]; then
+        return 0
+    fi
+
+    if [ ! -f ~/.config/zsh/atuin.zsh.version ] || [[ $(cat ~/.config/zsh/atuin.zsh.version) != $(atuin --version) ]]; then
+        return 0
+    fi
+
+    return 1
+}
+
 # atuin is an alternative application for handling shell history
 # https://github.com/ellie/atuin#install
 if command_exists atuin; then
-    if ! [ -f ~/.config/zsh/atuin.zsh ]; then
+    if zsh-needs-refresh; then
         atuin init zsh --disable-up-arrow >~/.config/zsh/atuin.zsh
     fi
 
     source ~/.config/zsh/atuin.zsh
+fi
+
+if [ -f ~/.config/zsh/zsh-shift-select.plugin.zsh ]; then
+    . ~/.config/zsh/zsh-shift-select.plugin.zsh
 fi
 
 if command_exists deno; then
