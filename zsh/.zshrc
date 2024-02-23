@@ -193,6 +193,7 @@ zsh-needs-refresh() {
 if command_exists atuin; then
     if zsh-needs-refresh; then
         atuin init zsh --disable-up-arrow >~/.config/zsh/atuin.zsh
+        atuin --version >~/.config/zsh/atuin.zsh.version
     fi
 
     source ~/.config/zsh/atuin.zsh
