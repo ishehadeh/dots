@@ -1,4 +1,4 @@
-import = ["/home/ian/.config/alacritty/theme.yml"]
+import = ["/home/ian/.config/alacritty/theme.toml"]
 live_config_reload = true
 
 [colors]

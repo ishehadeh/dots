@@ -2,6 +2,11 @@
 
 set -ue -o pipefail
 
+# set defaults for configs:
+#  - ALACRITTY_CONFIG_DIR ?= $XDG_CONFIG_HOME/alacritty | $HOME/.config/alacritty
+#  - ALACRITTY_THEME_DIR ?= $ALACRITTY_CONFIG_DIR/themes
+#  - ALACRITTY_CONFIG_DIR ?= $ALACRITTY_CONFIG_DIR/theme.toml
+#  - ALACRITTY_CONFIG_FILE ?= $ALACRITTY_CONFIG_DIR/theme.toml
 if [ "${ALACRITTY_CONFIG_DIR:-\0}" = "\0" ]; then
     if [ "${XDG_CONFIG_HOME-\0}" = "\0" ]; then
         ALACRITTY_CONFIG_DIR="$HOME/.config/alacritty"
@@ -15,12 +20,17 @@ if [ "${ALACRITTY_THEME_DIR:-\0}" = "\0" ]; then
 fi
 
 if [ "${ALACRITTY_THEME_FILE:-\0}" = "\0" ]; then
-    ALACRITTY_THEME_FILE="$ALACRITTY_CONFIG_DIR/theme.yml"
+    ALACRITTY_THEME_FILE="$ALACRITTY_CONFIG_DIR/theme.toml"
+fi
+
+if [ "${ALACRITTY_CONFIG_FILE:-\0}" = "\0" ]; then
+    ALACRITTY_CONFIG_FILE="$ALACRITTY_CONFIG_DIR/alacritty.toml"
 fi
 
 # canonicalize all config paths (except ALACRITTY_THEME_FILE, since thats supposed to be a symlink)
 ALACRITTY_CONFIG_DIR="$(readlink -f "$ALACRITTY_CONFIG_DIR")"
 ALACRITTY_THEME_DIR="$(readlink -f "$ALACRITTY_THEME_DIR")"
+ALACRITTY_CONFIG_FILE="$(readlink -f "$ALACRITTY_CONFIG_FILE")"
 
 # assert the theme file is a symlink to the theme dir
 if ! [ -L "$ALACRITTY_THEME_FILE" ]; then
@@ -38,15 +48,15 @@ if ! [ "$(dirname $(readlink -f "$ALACRITTY_THEME_FILE"))" = "$ALACRITTY_THEME_D
 fi
 
 alacritty_theme_get() {
-    readlink "$ALACRITTY_THEME_FILE" | xargs basename -s .yml
+    readlink "$ALACRITTY_THEME_FILE" | xargs basename -s .toml
 }
 
 alacritty_theme_list() {
-    ls -1 "$ALACRITTY_THEME_DIR" | xargs basename -s .yml
+    ls -1 "$ALACRITTY_THEME_DIR" | xargs basename -s .toml
 }
 
 alacritty_theme_set() {
-    if ! [ -f "$ALACRITTY_THEME_DIR/$1.yml" ]; then
+    if ! [ -f "$ALACRITTY_THEME_DIR/$1.toml" ]; then
         echo "no such theme $1, expected one of the following:"
         for t in $(alacritty_theme_list); do
             echo "  - $t"
@@ -55,8 +65,8 @@ alacritty_theme_set() {
         return 1
     fi
 
-    ln -s --force "$ALACRITTY_THEME_DIR/$1.yml" "$ALACRITTY_THEME_FILE"
-    touch "$ALACRITTY_CONFIG_DIR/alacritty.yml"
+    ln -s --force "$ALACRITTY_THEME_DIR/$1.toml" "$ALACRITTY_THEME_FILE"
+    touch "$ALACRITTY_CONFIG_FILE"
 }
 
 case "${1:-help}" in
