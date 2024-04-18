@@ -59,7 +59,7 @@ prompt simple
 # -----------------
  
 HISTFILE="$HOME/.histfile"
-HISTSIZE="$((1 << 32 - 1))" # max histsize is UINT32_MAX (at least on my system...)
+HISTSIZE="$((1 << 32-1))" # max histsize is UINT32_MAX (at least on my system...)
 SAVEHIST="$HISTSIZE"
 
 # Environemnt
@@ -215,4 +215,9 @@ fi
 if [ -d "$HOME/.local/plan9" ]; then
     export PLAN9="$HOME/.local/plan9"
     export PATH="$PATH:$PLAN9/bin"
+fi
+
+# fix electron app stuttering on wayland (nvidia only issue?)
+if [ "${XDG_SESSION_TYPE:=unknown}" = wayland ]; then
+    alias code="code --ozone-platform=wayland --enable-features=WaylandWindowDecorations"
 fi
