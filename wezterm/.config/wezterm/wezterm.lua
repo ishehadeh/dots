@@ -26,6 +26,8 @@ config.unix_domains = {
 }
 
 config.default_gui_startup_args = { 'connect', 'default' }
+config.initial_rows = 32
+config.initial_cols = 128
 
 -- and finally, return the configuration to wezterm
 return config
