@@ -175,6 +175,7 @@ dotenv() {
 }
 
 alias load-sdk="export SDKMAN_DIR=\"\$HOME/.sdkman\"; source \"\$SDKMAN_DIR/bin/sdkman-init.sh\""
+alias load-esp-idf="source '/opt/esp-idf/export.sh'"
 
 zsh-needs-refresh() {
     if [ ! -f ~/.config/zsh/atuin.zsh ]; then
