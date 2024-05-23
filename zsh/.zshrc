@@ -59,7 +59,7 @@ prompt simple
 # -----------------
  
 HISTFILE="$HOME/.histfile"
-HISTSIZE="$((1 << 32-1))" # max histsize is UINT32_MAX (at least on my system...)
+HISTSIZE="4294967295" # max histsize is UINT32_MAX (at least on my system...)
 SAVEHIST="$HISTSIZE"
 
 # Environemnt
@@ -88,7 +88,6 @@ else
 fi
 
 export PAGER="less"
-export TERM="alacritty"
 
 ## Application Config
 
@@ -221,4 +220,9 @@ fi
 # fix electron app stuttering on wayland (nvidia only issue?)
 if [ "${XDG_SESSION_TYPE:=unknown}" = wayland ]; then
     alias code="code --ozone-platform=wayland --enable-features=WaylandWindowDecorations"
+fi
+
+if [ "$TERM" = "wezterm" ]; then
+    install-wezterm-shell-integrations
+    source "$HOME/.config/zsh/wezterm/wezterm.sh"
 fi

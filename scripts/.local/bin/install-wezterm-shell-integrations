@@ -1,0 +1,31 @@
+#!/bin/sh
+
+set -e
+
+WEZTERM_RAW_REPO_URL="https://raw.githubusercontent.com/wez/wezterm/"
+WEZTERM_SHELL_INTEGRATION_PATH="${XDG_CONFIG_HOME:-$HOME/.config}/zsh/wezterm/wezterm.sh"
+WEZTERM_COMMIT_HASH_PATH="$WEZTERM_SHELL_INTEGRATION_PATH.version"
+
+command_exists() {
+    command -v "$1" >/dev/null && return 0
+    return 1
+}
+
+die() {
+    echo "$@"
+    exit 1
+}
+
+if ! command_exists "wezterm"; then
+    die "could not find 'wezterm' in path"
+fi
+
+wezterm_version="$(wezterm --version)"
+wezterm_commit_hash="${wezterm_version#*-*-}"
+
+if ! [ -f "$WEZTERM_COMMIT_HASH_PATH" ] || [ "$wezterm_commit_hash" != "$(cat "$WEZTERM_COMMIT_HASH_PATH")" ]; then
+    printf "%s" "$wezterm_commit_hash" >"$WEZTERM_COMMIT_HASH_PATH"
+    curl --silent --show-error --fail --location \
+        "$WEZTERM_RAW_REPO_URL/$wezterm_commit_hash/assets/shell-integration/wezterm.sh" \
+        -o "$WEZTERM_SHELL_INTEGRATION_PATH"
+fi
