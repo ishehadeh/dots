@@ -1,5 +1,6 @@
 -- Pull in the wezterm API
 local wezterm = require 'wezterm'
+local keys = require('keys')
 
 -- This will hold the configuration.
 local config = wezterm.config_builder()
@@ -8,7 +9,7 @@ local config = wezterm.config_builder()
 
 -- For example, changing the color scheme:
 config.color_scheme = 'Catppuccin Frappe'
-config.font = wezterm.font 'Iosevka Term'
+config.font = wezterm.font_with_fallback { 'Iosevka Term', 'Noto Color Emoji' }
 
 
 -- configure multiplexing
@@ -35,6 +36,9 @@ config.keys = {
     { key = 'UpArrow',   mods = 'SHIFT', action = act.ScrollToPrompt(-1) },
     { key = 'DownArrow', mods = 'SHIFT', action = act.ScrollToPrompt(1) },
 }
+
+config.key_tables = keys.key_tables
+config.keys = keys.keys
 
 config.term = 'wezterm'
 
