@@ -32,39 +32,18 @@ return {
     { key = 'l',          mods = 'LEADER',         action = act.SplitPane { direction = "Right" } },
     { key = 'j',          mods = 'LEADER',         action = act.SplitPane { direction = "Left" } },
 
-    { key = 'Enter',      mods = 'ALT',            action = act.ToggleFullScreen },
-    { key = '#',          mods = 'CTRL',           action = act.ActivateTab(2) },
-    { key = '#',          mods = 'SHIFT|CTRL',     action = act.ActivateTab(2) },
-    { key = '$',          mods = 'CTRL',           action = act.ActivateTab(3) },
-    { key = '$',          mods = 'SHIFT|CTRL',     action = act.ActivateTab(3) },
-    { key = '%',          mods = 'CTRL',           action = act.ActivateTab(4) },
-    { key = '%',          mods = 'SHIFT|CTRL',     action = act.ActivateTab(4) },
-    { key = '%',          mods = 'ALT|CTRL',       action = act.SplitHorizontal { domain = 'CurrentPaneDomain' } },
-    { key = '%',          mods = 'SHIFT|ALT|CTRL', action = act.SplitHorizontal { domain = 'CurrentPaneDomain' } },
-    { key = '5',          mods = 'SHIFT|ALT|CTRL', action = act.SplitHorizontal { domain = 'CurrentPaneDomain' } },
 
-    { key = '&',          mods = 'CTRL',           action = act.ActivateTab(6) },
-    { key = '&',          mods = 'SHIFT|CTRL',     action = act.ActivateTab(6) },
-    { key = '\'',         mods = 'SHIFT|ALT|CTRL', action = act.SplitVertical { domain = 'CurrentPaneDomain' } },
-    { key = '(',          mods = 'CTRL',           action = act.ActivateTab(-1) },
-    { key = '(',          mods = 'SHIFT|CTRL',     action = act.ActivateTab(-1) },
-    { key = ')',          mods = 'CTRL',           action = act.ResetFontSize },
-    { key = ')',          mods = 'SHIFT|CTRL',     action = act.ResetFontSize },
-    { key = '*',          mods = 'CTRL',           action = act.ActivateTab(7) },
-    { key = '*',          mods = 'SHIFT|CTRL',     action = act.ActivateTab(7) },
-    { key = '+',          mods = 'CTRL',           action = act.IncreaseFontSize },
-    { key = '+',          mods = 'SHIFT|CTRL',     action = act.IncreaseFontSize },
-    { key = '-',          mods = 'CTRL',           action = act.DecreaseFontSize },
-    { key = '-',          mods = 'SHIFT|CTRL',     action = act.DecreaseFontSize },
-    { key = '-',          mods = 'SUPER',          action = act.DecreaseFontSize },
-    { key = '0',          mods = 'CTRL',           action = act.ResetFontSize },
-    { key = '0',          mods = 'SHIFT|CTRL',     action = act.ResetFontSize },
-    { key = '0',          mods = 'SUPER',          action = act.ResetFontSize },
+    ------------------
+    -- COSMETIC --
+    ------------------
+    { key = 'F11',        mods = 'NONE',           action = act.ToggleFullScreen },
+
+    -- fonts
     { key = '=',          mods = 'CTRL',           action = act.IncreaseFontSize },
-    { key = '=',          mods = 'SHIFT|CTRL',     action = act.IncreaseFontSize },
-    { key = '=',          mods = 'SUPER',          action = act.IncreaseFontSize },
-    { key = '@',          mods = 'CTRL',           action = act.ActivateTab(1) },
-    { key = '@',          mods = 'SHIFT|CTRL',     action = act.ActivateTab(1) },
+    { key = '-',          mods = 'CTRL',           action = act.DecreaseFontSize },
+    { key = '0',          mods = 'CTRL',           action = act.ResetFontSize },
+
+
     { key = 'C',          mods = 'CTRL',           action = act.CopyTo 'Clipboard' },
     { key = 'C',          mods = 'SHIFT|CTRL',     action = act.CopyTo 'Clipboard' },
     { key = 'F',          mods = 'CTRL',           action = act.Search 'CurrentSelectionOrEmptyString' },
