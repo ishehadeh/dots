@@ -44,6 +44,7 @@ config.leader = { key = '`', mods = 'NONE' }
 config.key_tables = keys.key_tables
 config.keys = keys.keys
 
+
 config.term = 'wezterm'
 
 -- and finally, return the configuration to wezterm
