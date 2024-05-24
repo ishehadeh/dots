@@ -3,8 +3,24 @@ local act = wezterm.action
 
 return {
   keys = {
+    ------------------
+    -- TAB CONTROLS --
+    ------------------
+
+    -- cycle
     { key = 'Tab',        mods = 'CTRL',           action = act.ActivateTabRelative(1) },
     { key = 'Tab',        mods = 'SHIFT|CTRL',     action = act.ActivateTabRelative(-1) },
+
+    { key = '1',          mods = 'ALT',            action = act.ActivateTab(0) },
+    { key = '2',          mods = 'ALT',            action = act.ActivateTab(1) },
+    { key = '3',          mods = 'ALT',            action = act.ActivateTab(2) },
+    { key = '4',          mods = 'ALT',            action = act.ActivateTab(3) },
+    { key = '5',          mods = 'ALT',            action = act.ActivateTab(4) },
+    { key = '6',          mods = 'ALT',            action = act.ActivateTab(5) },
+    { key = '7',          mods = 'ALT',            action = act.ActivateTab(6) },
+    { key = '8',          mods = 'ALT',            action = act.ActivateTab(7) },
+    { key = '9',          mods = 'ALT',            action = act.ActivateTab(8) },
+
     { key = 'Enter',      mods = 'ALT',            action = act.ToggleFullScreen },
     { key = '!',          mods = 'CTRL',           action = act.ActivateTab(0) },
     { key = '!',          mods = 'SHIFT|CTRL',     action = act.ActivateTab(0) },
@@ -18,6 +34,8 @@ return {
     { key = '%',          mods = 'SHIFT|CTRL',     action = act.ActivateTab(4) },
     { key = '%',          mods = 'ALT|CTRL',       action = act.SplitHorizontal { domain = 'CurrentPaneDomain' } },
     { key = '%',          mods = 'SHIFT|ALT|CTRL', action = act.SplitHorizontal { domain = 'CurrentPaneDomain' } },
+    { key = '5',          mods = 'SHIFT|ALT|CTRL', action = act.SplitHorizontal { domain = 'CurrentPaneDomain' } },
+
     { key = '&',          mods = 'CTRL',           action = act.ActivateTab(6) },
     { key = '&',          mods = 'SHIFT|CTRL',     action = act.ActivateTab(6) },
     { key = '\'',         mods = 'SHIFT|ALT|CTRL', action = act.SplitVertical { domain = 'CurrentPaneDomain' } },
@@ -35,25 +53,6 @@ return {
     { key = '0',          mods = 'CTRL',           action = act.ResetFontSize },
     { key = '0',          mods = 'SHIFT|CTRL',     action = act.ResetFontSize },
     { key = '0',          mods = 'SUPER',          action = act.ResetFontSize },
-    { key = '1',          mods = 'SHIFT|CTRL',     action = act.ActivateTab(0) },
-    { key = '1',          mods = 'SUPER',          action = act.ActivateTab(0) },
-    { key = '2',          mods = 'SHIFT|CTRL',     action = act.ActivateTab(1) },
-    { key = '2',          mods = 'SUPER',          action = act.ActivateTab(1) },
-    { key = '3',          mods = 'SHIFT|CTRL',     action = act.ActivateTab(2) },
-    { key = '3',          mods = 'SUPER',          action = act.ActivateTab(2) },
-    { key = '4',          mods = 'SHIFT|CTRL',     action = act.ActivateTab(3) },
-    { key = '4',          mods = 'SUPER',          action = act.ActivateTab(3) },
-    { key = '5',          mods = 'SHIFT|CTRL',     action = act.ActivateTab(4) },
-    { key = '5',          mods = 'SHIFT|ALT|CTRL', action = act.SplitHorizontal { domain = 'CurrentPaneDomain' } },
-    { key = '5',          mods = 'SUPER',          action = act.ActivateTab(4) },
-    { key = '6',          mods = 'SHIFT|CTRL',     action = act.ActivateTab(5) },
-    { key = '6',          mods = 'SUPER',          action = act.ActivateTab(5) },
-    { key = '7',          mods = 'SHIFT|CTRL',     action = act.ActivateTab(6) },
-    { key = '7',          mods = 'SUPER',          action = act.ActivateTab(6) },
-    { key = '8',          mods = 'SHIFT|CTRL',     action = act.ActivateTab(7) },
-    { key = '8',          mods = 'SUPER',          action = act.ActivateTab(7) },
-    { key = '9',          mods = 'SHIFT|CTRL',     action = act.ActivateTab(-1) },
-    { key = '9',          mods = 'SUPER',          action = act.ActivateTab(-1) },
     { key = '=',          mods = 'CTRL',           action = act.IncreaseFontSize },
     { key = '=',          mods = 'SHIFT|CTRL',     action = act.IncreaseFontSize },
     { key = '=',          mods = 'SUPER',          action = act.IncreaseFontSize },
@@ -68,7 +67,7 @@ return {
     { key = 'L',          mods = 'CTRL',           action = act.ShowDebugOverlay },
     { key = 'L',          mods = 'SHIFT|CTRL',     action = act.ShowDebugOverlay },
     { key = 'M',          mods = 'CTRL',           action = act.Hide },
-    { key = 'M',          mods = 'SHIFT|CTRL',     action = act.Hide },
+    { key = 'd',          mods = 'CTRL|SHIFT',     action = act.DetachDomain 'CurrentPaneDomain' },
     { key = 'N',          mods = 'CTRL',           action = act.SpawnWindow },
     { key = 'N',          mods = 'SHIFT|CTRL',     action = act.SpawnWindow },
     { key = 'P',          mods = 'CTRL',           action = act.ActivateCommandPalette },
