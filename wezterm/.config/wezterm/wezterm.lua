@@ -40,6 +40,7 @@ config.initial_rows = 32
 config.initial_cols = 128
 
 config.disable_default_key_bindings = true
+config.leader = { key = '`', mods = 'NONE' }
 config.key_tables = keys.key_tables
 config.keys = keys.keys
 

@@ -11,6 +11,7 @@ return {
     { key = 'Tab',        mods = 'CTRL',           action = act.ActivateTabRelative(1) },
     { key = 'Tab',        mods = 'SHIFT|CTRL',     action = act.ActivateTabRelative(-1) },
 
+    -- jump
     { key = '1',          mods = 'ALT',            action = act.ActivateTab(0) },
     { key = '2',          mods = 'ALT',            action = act.ActivateTab(1) },
     { key = '3',          mods = 'ALT',            action = act.ActivateTab(2) },
@@ -21,11 +22,17 @@ return {
     { key = '8',          mods = 'ALT',            action = act.ActivateTab(7) },
     { key = '9',          mods = 'ALT',            action = act.ActivateTab(8) },
 
+
+
+    ------------------
+    -- SPLITS --
+    ------------------
+    { key = 'i',          mods = 'LEADER',         action = act.SplitPane { direction = "Up" } },
+    { key = 'k',          mods = 'LEADER',         action = act.SplitPane { direction = "Down" } },
+    { key = 'l',          mods = 'LEADER',         action = act.SplitPane { direction = "Right" } },
+    { key = 'j',          mods = 'LEADER',         action = act.SplitPane { direction = "Left" } },
+
     { key = 'Enter',      mods = 'ALT',            action = act.ToggleFullScreen },
-    { key = '!',          mods = 'CTRL',           action = act.ActivateTab(0) },
-    { key = '!',          mods = 'SHIFT|CTRL',     action = act.ActivateTab(0) },
-    { key = '\"',         mods = 'ALT|CTRL',       action = act.SplitVertical { domain = 'CurrentPaneDomain' } },
-    { key = '\"',         mods = 'SHIFT|ALT|CTRL', action = act.SplitVertical { domain = 'CurrentPaneDomain' } },
     { key = '#',          mods = 'CTRL',           action = act.ActivateTab(2) },
     { key = '#',          mods = 'SHIFT|CTRL',     action = act.ActivateTab(2) },
     { key = '$',          mods = 'CTRL',           action = act.ActivateTab(3) },
