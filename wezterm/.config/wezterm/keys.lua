@@ -7,6 +7,9 @@ return {
     -- TAB CONTROLS --
     ------------------
 
+    -- create
+    { key = 't',     mods = 'CTRL',       action = act.SpawnTab 'CurrentPaneDomain' },
+
     -- cycle
     { key = 'Tab',   mods = 'CTRL',       action = act.ActivateTabRelative(1) },
     { key = 'Tab',   mods = 'SHIFT|CTRL', action = act.ActivateTabRelative(-1) },
@@ -97,8 +100,6 @@ return {
     { key = 'P',          mods = 'SHIFT|CTRL',     action = act.ActivateCommandPalette },
     { key = 'R',          mods = 'CTRL',           action = act.ReloadConfiguration },
     { key = 'R',          mods = 'SHIFT|CTRL',     action = act.ReloadConfiguration },
-    { key = 'T',          mods = 'CTRL',           action = act.SpawnTab 'CurrentPaneDomain' },
-    { key = 'T',          mods = 'SHIFT|CTRL',     action = act.SpawnTab 'CurrentPaneDomain' },
     { key = 'U',          mods = 'CTRL',           action = act.CharSelect { copy_on_select = true, copy_to = 'ClipboardAndPrimarySelection' } },
     { key = 'U',          mods = 'SHIFT|CTRL',     action = act.CharSelect { copy_on_select = true, copy_to = 'ClipboardAndPrimarySelection' } },
 
