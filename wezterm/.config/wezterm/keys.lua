@@ -1,6 +1,22 @@
 local wezterm = require 'wezterm'
 local act = wezterm.action
 
+wezterm.on('copy-or-interrupt', function(window, pane)
+  local sel = window:get_selection_text_for_pane(pane)
+  if sel ~= "" then
+    window:copy_to_clipboard()
+  else
+    -- send ctrl-c
+    pane:send_text("\x1b\x03")
+  end
+end)
+
+local custom_act = {
+  -- Copy if there's text selected, otherwise send ctrl-c
+  CopyOrInterrupt = wezterm.action.EmitEvent('copy-or-interrupt')
+}
+
+
 return {
   keys = {
     ------------------
@@ -50,10 +66,11 @@ return {
     ------------------
     -- CLIPBOARD --
     ------------------
-    { key = 'c',     mods = 'SHIFT|CTRL', action = act.CopyTo 'Clipboard' },
+    { key = 'c',     mods = 'CTRL',       action = custom_act.CopyOrInterrupt },
     { key = 'c',     mods = 'SUPER',      action = act.CopyTo 'Clipboard' },
-    { key = 'v',     mods = 'SHIFT|CTRL', action = act.PasteFrom 'Clipboard' },
+    { key = 'v',     mods = 'CTRL',       action = act.PasteFrom 'Clipboard' },
     { key = 'v',     mods = 'SUPER',      action = act.PasteFrom 'Clipboard' },
+
     { key = 'Copy',  mods = 'NONE',       action = act.CopyTo 'Clipboard' },
     { key = 'Paste', mods = 'NONE',       action = act.PasteFrom 'Clipboard' },
 
