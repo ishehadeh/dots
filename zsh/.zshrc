@@ -226,3 +226,8 @@ if [ "$TERM" = "wezterm" ]; then
     install-wezterm-shell-integrations
     source "$HOME/.config/zsh/wezterm/wezterm.sh"
 fi
+
+if [ -x  "$HOME/.local/bin/mise" ]; then
+    # TODO: cache
+    eval "$("$HOME/.local/bin/mise" activate zsh)"
+fi

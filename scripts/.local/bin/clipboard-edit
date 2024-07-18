@@ -1,0 +1,7 @@
+#!/bin/sh
+
+paste="$(readlink -f "$(dirname "$0")")/paste"
+f="$(mktemp)"
+"$paste" >"$f"
+$EDITOR "$f" && copy <"$f"
+rm "$f"
