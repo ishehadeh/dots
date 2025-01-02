@@ -231,3 +231,31 @@ if [ -x  "$HOME/.local/bin/mise" ]; then
     # TODO: cache
     eval "$("$HOME/.local/bin/mise" activate zsh)"
 fi
+# bun completions
+[ -s "/home/ian/.bun/_bun" ] && source "/home/ian/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+function conda-initialize() {
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/ian/miniforge3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/ian/miniforge3/etc/profile.d/conda.sh" ]; then
+        . "/home/ian/miniforge3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/ian/miniforge3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+
+if [ -f "/home/ian/miniforge3/etc/profile.d/mamba.sh" ]; then
+    . "/home/ian/miniforge3/etc/profile.d/mamba.sh"
+fi
+# <<< conda initialize <<<
+}
+
