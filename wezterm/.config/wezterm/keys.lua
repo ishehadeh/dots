@@ -46,10 +46,10 @@ return {
     ------------------
     -- SPLITS --
     ------------------
-    { key = 'i',     mods = 'LEADER',     action = act.SplitPane { direction = "Up" } },
-    { key = 'k',     mods = 'LEADER',     action = act.SplitPane { direction = "Down" } },
-    { key = 'l',     mods = 'LEADER',     action = act.SplitPane { direction = "Right" } },
-    { key = 'j',     mods = 'LEADER',     action = act.SplitPane { direction = "Left" } },
+    { key = 'i',     mods = 'ALT',     action = act.SplitPane { direction = "Up" } },
+    { key = 'k',     mods = 'ALT',     action = act.SplitPane { direction = "Down" } },
+    { key = 'l',     mods = 'ALT',     action = act.SplitPane { direction = "Right" } },
+    { key = 'j',     mods = 'ALT',     action = act.SplitPane { direction = "Left" } },
 
 
     ------------------

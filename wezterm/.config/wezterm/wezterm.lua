@@ -8,7 +8,7 @@ local config = wezterm.config_builder()
 -- This is where you actually apply your config choices
 
 -- For example, changing the color scheme:
-config.color_scheme = 'Catppuccin Frappe'
+config.color_scheme = 'Catppuccin Mocha'
 config.font = wezterm.font_with_fallback { 'Iosevka Term', 'Iosevka Nerd Font Term', 'SF Mono', 'Droid Sans Mono', 'monospace', 'Droid Sans Fallback', 'Material Design Icons Desktop', 'Noto Color Emoji' }
 
 config.use_fancy_tab_bar = false
