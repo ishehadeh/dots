@@ -5,3 +5,8 @@
 
 # Systemd user enabled services
 /systemd/.config/systemd/user/*.target.wants/*
+
+# Stow may symlink ~/.local/bin to ./scripts/.local/bin in some cases.
+# To avoid tracking random utils that add files there, we ignore everything except the scripts we want to track.
+/scripts/.local/bin/*
+!/scripts/.local/bin/{alacritty-theme,clipboard-edit,copy,install-wezterm-shell-integrations,paste,proc-find-str,prompt-run-helper,sync-alacritty-theme}
