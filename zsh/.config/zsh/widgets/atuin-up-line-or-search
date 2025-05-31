@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 atuin-up-line-or-search() {
-    if [ "$_atuin_hist_pos" -eq 0 ]; then
+    if [ "$_atuin_hist_pos" -eq 0 ] || [ "${#RBUFFER}" -ne 0 ]; then
         _atuin_search="$LBUFFER"
     fi
     _atuin_hist_pos=$((_atuin_hist_pos + 1))

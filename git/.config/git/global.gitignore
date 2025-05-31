@@ -7,3 +7,11 @@
 .vscode/
 *.code-profile
 *.code-workspace
+*.kate-swp
+
+# temporary special case...
+mise.toml
+mise-tasks/
+
+# Folder for arbitrary files I don't want in git
+.ian/

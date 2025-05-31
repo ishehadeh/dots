@@ -30,6 +30,10 @@ promptinit
 # Load Widgets
 fpath=(~/.config/zsh/widgets $fpath)
 for widget in $(ls ~/.config/zsh/widgets); do
+    case "$widget" in
+        *".disabled") continue ;;
+    esac
+
     autoload -U "$widget"
     zle -N "$widget"
 done
@@ -47,6 +51,7 @@ bindkey ';5D' backward-word
 # Search history on up/down
 bindkey '^[[A' atuin-up-line-or-search
 bindkey '^[[B' atuin-down-line
+
 _atuin_reset_hist_pos() { 
     _atuin_hist_pos=0
 }
@@ -259,3 +264,17 @@ fi
 # <<< conda initialize <<<
 }
 
+
+[[ -r "/usr/share/z/z.sh" ]] && source /usr/share/z/z.sh
+
+git-save() {
+    # detach from the current branch, but keep head at the same commit
+    git switch --detach
+
+    # commit everything in the working tree
+    git add .
+    git commit -m "WIP $(date -Is)"
+
+    # switch back to the working branch
+    git switch -
+}
