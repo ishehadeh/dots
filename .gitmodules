@@ -1,3 +1,6 @@
 [submodule "themes/arc-theme-gruvbox"]
 	path = themes/arc-theme-gruvbox
 	url = git@github.com:ishehadeh/arc-theme-gruvbox
+[submodule "third-party/zsh-completions"]
+	path = third-party/zsh-completions
+	url = git@github.com:zsh-users/zsh-completions.git
