@@ -124,6 +124,13 @@ if [ -f ~/.npmrc ]; then
     fi
 fi
 
+
+# Ruby
+
+if command_exists rbenv; then
+	eval "$(rbenv init -)"
+fi
+
 # Aliases
 # ------------------
 
