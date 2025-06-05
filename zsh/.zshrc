@@ -100,8 +100,7 @@ export PAGER="less"
 export LESS="--mouse --quiet --RAW-CONTROL-CHARS"
 
 ## User-local Paths
-# prioritize ~/.local/bin over system paths
-export PATH="$HOME/.local/bin:$PATH" 
+export PATH="$HOME/.local/bin:$PATH" # prioritize ~/.local/bin over system paths
 
 command_exists cargo && test -d ~/.cargo/bin && export PATH="$HOME/.cargo/bin:$PATH"
 
@@ -125,13 +124,6 @@ if [ -f ~/.npmrc ]; then
     fi
 fi
 
-
-# Ruby
-
-if command_exists rbenv; then
-	eval "$(rbenv init -)"
-fi
-
 # Aliases
 # ------------------
 
@@ -146,6 +138,143 @@ test -f "$HOME/.ghcup/env" && source "$HOME/.ghcup/env"
 # Functions
 # ------------------
 
-if command_exists mise; then
-    eval "$(mise activate)"
+# source: https://github.com/sfinktah/bash/blob/master/rawurlencode.inc.sh
+urlencode() {
+    while read -r -k 1 -u 0 -d "\000" c; do
+        case "$c" in 
+            [-_.~a-zA-Z0-9]) 
+                echo -n "$c" 
+                ;;
+            *) 
+                printf '%%%02x' "'$c"
+                ;;
+        esac
+    done 
+}
+
+urldecode() {
+    while read -r -k 1 -u 0 -d "\000" c; do
+        case "$c" in 
+           %) 
+                read -r -k 2 -u 0 -d "\000" ccode
+                echo -n "\x$ccode"
+                ;;
+            *) 
+                echo -n "$c" 
+                ;;
+        esac
+    done
+}
+
+# Load definitions from '.env' into the current environment
+dotenv() {
+    local env_filename="${1:-.env}"
+    set -o allexport
+    source "$env_filename"
+    set +o allexport
+}
+
+'='() {
+    bc -l <<<"$@"
+}
+
+alias load-sdk="export SDKMAN_DIR=\"\$HOME/.sdkman\"; source \"\$SDKMAN_DIR/bin/sdkman-init.sh\""
+alias load-esp-idf="source '/opt/esp-idf/export.sh'"
+
+zsh-needs-refresh() {
+    if [ ! -f ~/.config/zsh/atuin.zsh ]; then
+        return 0
+    fi
+
+    if [ ! -f ~/.config/zsh/atuin.zsh.version ] || [[ $(cat ~/.config/zsh/atuin.zsh.version) != $(atuin --version) ]]; then
+        return 0
+    fi
+
+    return 1
+}
+
+# atuin is an alternative application for handling shell history
+# https://github.com/ellie/atuin#install
+if command_exists atuin; then
+    if zsh-needs-refresh; then
+        atuin init zsh --disable-up-arrow >~/.config/zsh/atuin.zsh
+        atuin --version >~/.config/zsh/atuin.zsh.version
+    fi
+
+    source ~/.config/zsh/atuin.zsh
 fi
+
+if [ -f ~/.config/zsh/zsh-shift-select.plugin.zsh ]; then
+    . ~/.config/zsh/zsh-shift-select.plugin.zsh
+fi
+
+if command_exists deno; then
+    # deno is JS runtime, if its installed export its bin directory.
+    # The bin directory is applications installed through deno are kept.
+    export PATH="$PATH:${DENO_INSTALL_ROOT:-$HOME/.deno}/bin"
+fi
+
+# opam configuration
+[[ ! -r /home/ian/.opam/opam-init/init.zsh ]] || source /home/ian/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
+
+if [ -d "$HOME/.local/plan9" ]; then
+    export PLAN9="$HOME/.local/plan9"
+    export PATH="$PATH:$PLAN9/bin"
+fi
+
+# fix electron app stuttering on wayland (nvidia only issue?)
+if [ "${XDG_SESSION_TYPE:=unknown}" = wayland ]; then
+    alias code="code --ozone-platform=wayland --enable-features=WaylandWindowDecorations"
+fi
+
+if [ "$TERM" = "wezterm" ]; then
+    install-wezterm-shell-integrations
+    source "$HOME/.config/zsh/wezterm/wezterm.sh"
+fi
+
+if [ -x  "$HOME/.local/bin/mise" ]; then
+    # TODO: cache
+    eval "$("$HOME/.local/bin/mise" activate zsh)"
+fi
+# bun completions
+[ -s "/home/ian/.bun/_bun" ] && source "/home/ian/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+function conda-initialize() {
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$('/home/ian/miniforge3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "/home/ian/miniforge3/etc/profile.d/conda.sh" ]; then
+        . "/home/ian/miniforge3/etc/profile.d/conda.sh"
+    else
+        export PATH="/home/ian/miniforge3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+
+if [ -f "/home/ian/miniforge3/etc/profile.d/mamba.sh" ]; then
+    . "/home/ian/miniforge3/etc/profile.d/mamba.sh"
+fi
+# <<< conda initialize <<<
+}
+
+
+[[ -r "/usr/share/z/z.sh" ]] && source /usr/share/z/z.sh
+
+git-save() {
+    # detach from the current branch, but keep head at the same commit
+    git switch --detach
+
+    # commit everything in the working tree
+    git add .
+    git commit -m "WIP $(date -Is)"
+
+    # switch back to the working branch
+    git switch -
+}
