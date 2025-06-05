@@ -48,16 +48,6 @@ bindkey -e
 bindkey ';5C' forward-word
 bindkey ';5D' backward-word
 
-# Search history on up/down
-bindkey '^[[A' atuin-up-line-or-search
-bindkey '^[[B' atuin-down-line
-
-_atuin_reset_hist_pos() { 
-    _atuin_hist_pos=0
-}
-typeset -a precmd_functions
-precmd_functions+=(_atuin_reset_hist_pos)
-
 prompt simple
 
 # History
@@ -196,6 +186,16 @@ zsh-needs-refresh() {
 # atuin is an alternative application for handling shell history
 # https://github.com/ellie/atuin#install
 if command_exists atuin; then
+    # Search history on up/down
+    bindkey '^[[A' atuin-up-line-or-search
+    bindkey '^[[B' atuin-down-line
+
+    _atuin_reset_hist_pos() { 
+        _atuin_hist_pos=0
+    }
+    typeset -a precmd_functions
+    precmd_functions+=(_atuin_reset_hist_pos)
+
     if zsh-needs-refresh; then
         atuin init zsh --disable-up-arrow >~/.config/zsh/atuin.zsh
         atuin --version >~/.config/zsh/atuin.zsh.version
